@@ -1,0 +1,369 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0a0f14">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-180.png">
+<title>HYROX Toulouse Coach</title>
+<style>
+:root{
+  --bg:#070b10; --panel:#0f1721; --panel2:#151f2c; --line:#243243;
+  --txt:#f8fbff; --muted:#8ea0b2; --lime:#d7ff45; --cyan:#57d6ff;
+  --good:#6ee7b7; --warn:#ffd166; --bad:#ff7d94; --shadow:0 20px 55px rgba(0,0,0,.34);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:
+radial-gradient(circle at 70% -10%,rgba(87,214,255,.12),transparent 34%),
+linear-gradient(180deg,#070b10,#0a1119 48%,#070b10);
+color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,sans-serif}
+body{padding-bottom:96px}
+button,input,select{font:inherit}
+.app{max-width:900px;margin:auto;padding:env(safe-area-inset-top) 14px 30px}
+.topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 2px 12px}
+.brand{display:flex;gap:11px;align-items:center}
+.brand img{width:48px;height:48px;border-radius:14px;box-shadow:0 8px 24px rgba(0,0,0,.35)}
+.eyebrow{color:var(--lime);font-size:11px;font-weight:900;letter-spacing:.13em;text-transform:uppercase}
+h1{font-size:24px;line-height:1.05;margin:3px 0 0}
+.datebadge{background:#121d29;border:1px solid var(--line);padding:9px 11px;border-radius:14px;text-align:center}
+.datebadge strong{display:block;font-size:18px}.datebadge span{font-size:10px;color:var(--muted);text-transform:uppercase}
+.screen{display:none}.screen.active{display:block}
+.hero{position:relative;overflow:hidden;background:
+linear-gradient(140deg,rgba(215,255,69,.14),rgba(87,214,255,.06) 55%,rgba(15,23,33,.95));
+border:1px solid #2a3b4e;border-radius:26px;padding:20px;box-shadow:var(--shadow);margin-top:8px}
+.hero:after{content:"";position:absolute;width:180px;height:180px;border:26px solid rgba(87,214,255,.06);border-radius:50%;right:-55px;top:-65px}
+.hero .label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.12em}
+.hero .big{font-size:42px;font-weight:900;line-height:1;margin:8px 0 7px}
+.hero .goal{font-size:14px;color:#cdd7e0;max-width:520px;line-height:1.45}
+.herogrid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:16px}
+.mini{background:rgba(8,14,20,.58);border:1px solid rgba(255,255,255,.07);border-radius:15px;padding:11px}
+.mini b{display:block;font-size:17px}.mini span{font-size:10px;color:var(--muted);text-transform:uppercase}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);gap:12px;margin-top:12px}
+.card{grid-column:span 12;background:rgba(15,23,33,.95);border:1px solid var(--line);border-radius:22px;padding:16px;box-shadow:0 12px 34px rgba(0,0,0,.20)}
+.s4{grid-column:span 4}.s5{grid-column:span 5}.s6{grid-column:span 6}.s7{grid-column:span 7}.s8{grid-column:span 8}
+@media(max-width:720px){.s4,.s5,.s6,.s7,.s8{grid-column:span 12}}
+.card h2{font-size:17px;margin:0 0 12px}
+.subtle{color:var(--muted);font-size:12px;line-height:1.5}
+.session{background:linear-gradient(180deg,#172433,#111923);border:1px solid #2b3b4c;border-radius:20px;padding:15px}
+.session .tag{color:var(--lime);font-size:10px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.session .title{font-size:24px;font-weight:900;margin:5px 0 7px}
+.session p{margin:0;color:#cfdae3;line-height:1.55;font-size:14px}
+.chips{display:flex;gap:7px;flex-wrap:wrap;margin-top:11px}
+.chip{padding:7px 9px;border-radius:999px;background:#1a2a39;color:#dbe8f2;font-size:11px}
+.chip.good{background:#14372e;color:#baffdf}.chip.warn{background:#3d3317;color:#ffe6a1}
+.weekday{display:grid;grid-template-columns:72px 1fr auto;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
+.weekday:last-child{border-bottom:0}.weekday .time{font-size:11px;color:var(--muted);margin-top:2px}
+.weekday .desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
+@media(max-width:560px){.weekday{grid-template-columns:62px 1fr}.weekday .chip{grid-column:2;justify-self:start}}
+button{border:0;border-radius:14px;padding:12px 14px;font-weight:850;cursor:pointer}
+.primary{background:var(--lime);color:#0a1015}.secondary{background:#223448;color:#f4f8fb}.ghost{background:transparent;color:#e3edf5;border:1px solid var(--line)}
+.row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
+.fields{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(max-width:560px){.fields{grid-template-columns:1fr}}
+label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}
+input,select{width:100%;background:#0a121a;color:var(--txt);border:1px solid var(--line);border-radius:13px;padding:11px 12px;outline:none}
+input:focus,select:focus{border-color:var(--cyan)}
+.score{font-size:40px;font-weight:900}
+.gauge{height:10px;background:#0a1118;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
+.gauge>div{height:100%;background:linear-gradient(90deg,var(--cyan),var(--lime))}
+.chart{width:100%;height:170px;background:#0b131b;border:1px solid var(--line);border-radius:16px;padding:8px}
+.chart svg{width:100%;height:100%}
+.kpirow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpi{padding:11px;background:#0c151e;border:1px solid var(--line);border-radius:14px}
+.kpi b{font-size:19px;display:block}.kpi span{font-size:10px;color:var(--muted);text-transform:uppercase}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th,td{text-align:left;padding:9px 7px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.notice{background:#0e202b;border-left:3px solid var(--cyan);padding:11px 12px;border-radius:11px;color:#d9e8f2;font-size:12px;line-height:1.48}
+.bottomnav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(100%,900px);z-index:30;background:rgba(9,14,20,.91);backdrop-filter:blur(18px);border-top:1px solid #263545;padding:8px 8px calc(8px + env(safe-area-inset-bottom));display:grid;grid-template-columns:repeat(5,1fr)}
+.navbtn{background:transparent;color:#7f92a4;border-radius:13px;padding:7px 4px;font-size:10px;font-weight:750}
+.navbtn .ico{display:block;font-size:20px;margin-bottom:3px}.navbtn.active{color:var(--lime);background:#131f2a}
+.sectiontitle{font-size:30px;font-weight:900;margin:16px 0 4px}.sectionintro{color:var(--muted);font-size:13px;margin-bottom:12px}
+.ring{width:120px;height:120px;border-radius:50%;display:grid;place-items:center;margin:auto;background:conic-gradient(var(--lime) 0 72%,#182431 72% 100%)}
+.ring:before{content:"";width:88px;height:88px;border-radius:50%;background:#101923;position:absolute}.ring span{position:relative;font-weight:900;font-size:25px}
+.phase{padding:11px 12px;background:#0a131c;border:1px solid var(--line);border-radius:14px;margin-top:8px}.phase.active{border-color:var(--lime)}
+hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="topbar">
+    <div class="brand">
+      <img src="./icon-192.png" alt="">
+      <div><div class="eyebrow">Toulouse 2027</div><h1>HYROX Coach</h1></div>
+    </div>
+    <div class="datebadge"><strong id="daysTop">—</strong><span>jours</span></div>
+  </div>
+
+  <!-- ACCUEIL -->
+  <section id="home" class="screen active">
+    <div class="hero">
+      <div class="label">Objectif principal</div>
+      <div class="big">Courir vite.<br>Garder du jus.</div>
+      <div class="goal">Ton plan est construit autour de 4 séances HYROX par semaine. On améliore ta course sans te vider avant les ateliers.</div>
+      <div class="herogrid">
+        <div class="mini"><b id="homeHyroxPace">—</b><span>allure HYROX</span></div>
+        <div class="mini"><b id="homePhase">—</b><span>phase</span></div>
+        <div class="mini"><b id="homeFresh">—</b><span>fraîcheur</span></div>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card s8">
+        <h2>Prochaine séance course</h2>
+        <div id="homeSession" class="session"></div>
+      </div>
+      <div class="card s4">
+        <h2>État du jour</h2>
+        <div class="score" id="freshScore">—</div>
+        <div class="subtle">Score de fraîcheur</div>
+        <div class="gauge"><div id="freshBar"></div></div>
+        <div id="freshText" class="notice" style="margin-top:12px"></div>
+      </div>
+
+      <div class="card s7">
+        <h2>Cette semaine</h2>
+        <div id="homeWeek"></div>
+      </div>
+      <div class="card s5">
+        <h2>Repères</h2>
+        <div class="kpirow">
+          <div class="kpi"><b id="kEasy">—</b><span>Facile</span></div>
+          <div class="kpi"><b id="kTempo">—</b><span>Seuil</span></div>
+          <div class="kpi"><b id="kHyrox">—</b><span>HYROX</span></div>
+        </div>
+        <div class="notice" style="margin-top:12px">Ton 3 km en 15:00 reste un repère de vitesse. L’app ne te demande pas de courir ton HYROX à 5:00/km.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLAN -->
+  <section id="plan" class="screen">
+    <div class="sectiontitle">Plan</div>
+    <div class="sectionintro">Ta semaine s’adapte selon ta fatigue et la phase de préparation.</div>
+    <div class="card">
+      <h2>Semaine d’entraînement</h2>
+      <div id="planWeek"></div>
+      <div class="row" style="margin-top:14px">
+        <button class="primary" onclick="downloadICS()">Ajouter au Calendrier Apple</button>
+        <button class="secondary" onclick="render()">Recalculer</button>
+      </div>
+    </div>
+    <div class="grid">
+      <div class="card s6"><h2>Phase actuelle</h2><div id="phaseList"></div></div>
+      <div class="card s6">
+        <h2>Allures de travail</h2>
+        <table>
+          <tr><th>Travail</th><th>Allure</th><th>But</th></tr>
+          <tr><td>Endurance</td><td id="pEasy">—</td><td>Moteur aérobie</td></tr>
+          <tr><td>Seuil</td><td id="pTempo">—</td><td>Tenir un effort élevé</td></tr>
+          <tr><td>Intervalles</td><td id="pInterval">—</td><td>Vitesse / économie</td></tr>
+          <tr><td>HYROX</td><td id="pHyrox">—</td><td>1 km répétable</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROGRESSION -->
+  <section id="progress" class="screen">
+    <div class="sectiontitle">Progression</div>
+    <div class="sectionintro">L’objectif est de voir si une même allure te coûte de moins en moins.</div>
+    <div class="grid">
+      <div class="card s6">
+        <h2>Allure enregistrée</h2>
+        <div class="chart"><svg id="paceChart" viewBox="0 0 600 180" preserveAspectRatio="none"></svg></div>
+      </div>
+      <div class="card s6">
+        <h2>RPE</h2>
+        <div class="chart"><svg id="rpeChart" viewBox="0 0 600 180" preserveAspectRatio="none"></svg></div>
+      </div>
+      <div class="card s4"><div class="label">Séances enregistrées</div><div class="score" id="statSessions">0</div></div>
+      <div class="card s4"><div class="label">Km enregistrés</div><div class="score" id="statKm">0</div></div>
+      <div class="card s4"><div class="label">Meilleure allure</div><div class="score" style="font-size:28px" id="statBest">—</div></div>
+    </div>
+  </section>
+
+  <!-- JOURNAL -->
+  <section id="journal" class="screen">
+    <div class="sectiontitle">Journal</div>
+    <div class="sectionintro">Après une séance, dis à l’app ce qui s’est réellement passé.</div>
+    <div class="card">
+      <div class="fields">
+        <div><label>Type de séance</label><select id="jType"><option>Course facile</option><option>Séance qualité</option><option>HYROX</option><option>Test course</option></select></div>
+        <div><label>Distance (km)</label><input id="jDistance" type="number" step=".1" placeholder="ex. 5"></div>
+        <div><label>Allure moyenne (mm:ss/km)</label><input id="jPace" placeholder="ex. 5:38"></div>
+        <div><label>RPE 1–10</label><input id="jRpe" type="number" min="1" max="10" value="7"></div>
+        <div><label>Après la course</label><select id="jAfter"><option value="good">Encore du jus</option><option value="medium" selected>Correct</option><option value="cooked">Cuit pour les ateliers</option></select></div>
+        <div><label>Douleur ?</label><select id="jPain"><option value="no" selected>Non</option><option value="yes">Oui</option></select></div>
+      </div>
+      <button class="primary" style="width:100%;margin-top:12px" onclick="saveJournal()">Enregistrer la séance</button>
+      <div id="journalMsg" class="subtle" style="margin-top:8px"></div>
+    </div>
+    <div class="card" style="margin-top:12px">
+      <h2>Historique</h2>
+      <div style="overflow:auto"><table><thead><tr><th>Date</th><th>Type</th><th>Km</th><th>Allure</th><th>RPE</th><th>État</th></tr></thead><tbody id="history"></tbody></table></div>
+    </div>
+  </section>
+
+  <!-- REGLAGES -->
+  <section id="settings" class="screen">
+    <div class="sectiontitle">Réglages</div>
+    <div class="sectionintro">Les valeurs de départ sont déjà adaptées à ton organisation actuelle.</div>
+    <div class="grid">
+      <div class="card s6">
+        <h2>Profil course</h2>
+        <div class="fields">
+          <div><label>Distance test</label><input id="sTestDistance" type="number" step=".1"></div>
+          <div><label>Temps test</label><input id="sTestTime"></div>
+          <div><label>Objectif allure HYROX</label><input id="sTarget"></div>
+          <div><label>Vendredi HYROX</label><select id="sFriday"><option value="18">18 h</option><option value="19">19 h</option></select></div>
+        </div>
+        <button class="primary" style="width:100%;margin-top:12px" onclick="saveSettings()">Enregistrer</button>
+      </div>
+      <div class="card s6">
+        <h2>État du jour</h2>
+        <div class="fields">
+          <div><label>Fatigue</label><select id="sFatigue"><option value="1">1 — très frais</option><option value="2">2</option><option value="3">3 — normal</option><option value="4">4</option><option value="5">5 — très fatigué</option></select></div>
+          <div><label>Jambes</label><select id="sLegs"><option value="1">1 — lourdes</option><option value="2">2</option><option value="3">3 — normal</option><option value="4">4</option><option value="5">5 — très bonnes</option></select></div>
+          <div><label>Sommeil</label><select id="sSleep"><option value="1">Mauvais</option><option value="2">Moyen</option><option value="3">Bon</option></select></div>
+        </div>
+        <button class="secondary" style="width:100%;margin-top:12px" onclick="saveReadiness()">Mettre à jour la fatigue</button>
+      </div>
+      <div class="card">
+        <h2>Données</h2>
+        <div class="row"><button class="ghost" onclick="exportData()">Exporter mes données</button><button class="ghost" onclick="resetData()">Réinitialiser</button></div>
+        <div class="notice" style="margin-top:12px">Tes données restent pour l’instant dans le navigateur de ton iPhone. Il n’y a ni compte ni serveur externe.</div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<nav class="bottomnav">
+  <button class="navbtn active" data-screen="home" onclick="go('home',this)"><span class="ico">⌂</span>Accueil</button>
+  <button class="navbtn" data-screen="plan" onclick="go('plan',this)"><span class="ico">▦</span>Plan</button>
+  <button class="navbtn" data-screen="progress" onclick="go('progress',this)"><span class="ico">↗</span>Progrès</button>
+  <button class="navbtn" data-screen="journal" onclick="go('journal',this)"><span class="ico">＋</span>Journal</button>
+  <button class="navbtn" data-screen="settings" onclick="go('settings',this)"><span class="ico">⚙</span>Réglages</button>
+</nav>
+
+<script>
+const RACE=new Date("2027-02-07T08:00:00"), START=new Date("2026-10-21T00:00:00");
+const KEY="hyroxToulouseBeautifulAppV1";
+let state=JSON.parse(localStorage.getItem(KEY)||"null")||{
+ profile:{testDistance:3,testTime:"15:00",target:"5:20",friday:"19"},
+ readiness:{fatigue:3,legs:3,sleep:3},
+ feedback:[],
+ adaptation:{paceOffset:0,volume:1}
+};
+const $=id=>document.getElementById(id);
+function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+function sec(s){if(!s)return null;let p=s.trim().split(":").map(Number);if(p.some(isNaN))return null;return p.length===2?p[0]*60+p[1]:p.length===3?p[0]*3600+p[1]*60+p[2]:null}
+function fmt(x){if(!isFinite(x))return"—";let m=Math.floor(x/60),s=Math.round(x%60);if(s===60){m++;s=0}return`${m}:${String(s).padStart(2,"0")}`}
+function range(a,b){return`${fmt(a)}–${fmt(b)}`}
+function today(){let d=new Date();d.setHours(0,0,0,0);return d}
+function days(){return Math.max(0,Math.ceil((RACE-today())/86400000))}
+function benchmark(){return(sec(state.profile.testTime)||900)/(state.profile.testDistance||3)}
+function phase(){let d=days();if(d>84)return{id:1,name:"Base",sub:"Construire le moteur"};if(d>49)return{id:2,name:"Développement",sub:"Seuil + intervalles"};if(d>21)return{id:3,name:"Spécifique",sub:"1 km sous fatigue contrôlée"};return{id:4,name:"Affûtage",sub:"Moins de volume, plus de fraîcheur"}}
+function readiness(){let r=state.readiness;return Math.max(0,Math.min(100,55+(r.legs-3)*10-(r.fatigue-3)*12+(r.sleep-2)*10))}
+function hyroxCenter(){
+ let b=benchmark(), target=sec(state.profile.target)||320, total=Math.max(1,(RACE-START)/86400000), prog=Math.max(0,Math.min(1,1-days()/total));
+ let base=b+42, planned=base+(target-base)*prog*.78;
+ return Math.max(target,planned+(state.adaptation.paceOffset||0));
+}
+function zones(){let b=benchmark(),h=hyroxCenter();return{easy:[b+75,b+105],tempo:[b+25,b+40],interval:[b+2,b+15],hyrox:[h-7,h+8]}}
+function easySession(){let z=zones(),s=readiness(),m=s<45?35:s<70?40:45;return{title:`${m} min facile`,desc:`Reste entre ${range(z.easy[0],z.easy[1])}/km. Conversation possible. Aucun objectif de chrono.`}}
+function quality(){
+ let z=zones(),p=phase().id,s=readiness(),v=state.adaptation.volume||1;
+ if(s<45)return{tag:"Récupération",title:"35–40 min très faciles",desc:`Cours entre ${range(z.easy[0]+10,z.easy[1]+15)}/km. Pas de fractionné cette semaine.`,load:"Faible"};
+ if(p===1){let r=Math.max(4,Math.round(6*v));return{tag:"Intervalles courts",title:`${r} × 400 m`,desc:`15 min faciles, puis ${r} × 400 m à ${range(z.interval[0],z.interval[1])}/km. Récupération 1 min 30, puis 10 min faciles.`,load:"Modérée"}}
+ if(p===2){let r=Math.max(3,Math.round(5*v));return{tag:"Intervalles",title:`${r} × 800 m`,desc:`15 min faciles, puis ${r} × 800 m à ${range(z.interval[0]+4,z.interval[1]+8)}/km. Récupération 2 min.`,load:"Élevée"}}
+ if(p===3){let r=Math.max(4,Math.round(5*v));return{tag:"Spécifique HYROX",title:`${r} × 1 km contrôlés`,desc:`15 min faciles. Puis ${r} × 1 km à ${range(z.hyrox[0],z.hyrox[1])}/km, récupération 90 s. Sur 2 répétitions : 10 burpees OU 20 fentes avant le km.`,load:"Élevée"}}
+ return{tag:"Rappel allure",title:"4 × 1 km propre",desc:`15 min faciles. 4 × 1 km à ${range(z.hyrox[0],z.hyrox[1])}/km, récupération 90 s. Tu dois finir avec de la marge.`,load:"Modérée"}
+}
+function week(){
+ let e=easySession(),q=quality();
+ return[
+  ["Lun.","18:00","HYROX","Séance habituelle","hyrox"],
+  ["Mar.","19:00","HYROX","Séance habituelle","hyrox"],
+  ["Mer.","—",e.title,e.desc,"easy"],
+  ["Jeu.","18:30","HYROX","Séance habituelle","hyrox"],
+  ["Ven.",state.profile.friday+":00","HYROX","Selon ton travail","hyrox"],
+  ["Sam.","—","Repos / récup.","VTT tranquille possible si jambes fraîches","rest"],
+  ["Dim.","—",q.title,q.desc,"quality"]
+ ]
+}
+function weekHtml(){return week().map(x=>`<div class="weekday"><div><strong>${x[0]}</strong><div class="time">${x[1]}</div></div><div><strong>${x[2]}</strong><div class="desc">${x[3]}</div></div><span class="chip ${x[4]==="quality"?"warn":x[4]==="easy"?"good":""}">${x[4]==="quality"?"Séance clé":x[4]==="easy"?"Course":x[4]==="rest"?"Récup":"HYROX"}</span></div>`).join("")}
+function go(id,btn){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".navbtn").forEach(x=>x.classList.remove("active"));btn.classList.add("active");window.scrollTo({top:0,behavior:"smooth"});if(id==="progress")drawCharts()}
+function render(){
+ let z=zones(),ph=phase(),fr=readiness(),q=quality();
+ $("daysTop").textContent=days();
+ $("homeHyroxPace").textContent=range(z.hyrox[0],z.hyrox[1]);
+ $("homePhase").textContent=ph.name;
+ $("homeFresh").textContent=fr+"/100";
+ $("freshScore").textContent=fr;
+ $("freshBar").style.width=fr+"%";
+ $("freshText").textContent=fr>=75?"Tu es plutôt frais : tu peux maintenir la séance qualité.":fr>=50?"État correct : garde le plan mais ne dépasse pas les allures.":"Fatigue élevée : l’app réduit automatiquement la charge.";
+ $("homeSession").innerHTML=`<div class="tag">${q.tag}</div><div class="title">${q.title}</div><p>${q.desc}</p><div class="chips"><span class="chip warn">${q.load}</span><span class="chip good">Dimanche</span></div>`;
+ $("homeWeek").innerHTML=weekHtml(); $("planWeek").innerHTML=weekHtml();
+ $("kEasy").textContent=fmt(z.easy[0]); $("kTempo").textContent=fmt(z.tempo[0]); $("kHyrox").textContent=fmt(z.hyrox[0]);
+ $("pEasy").textContent=range(z.easy[0],z.easy[1])+"/km"; $("pTempo").textContent=range(z.tempo[0],z.tempo[1])+"/km"; $("pInterval").textContent=range(z.interval[0],z.interval[1])+"/km"; $("pHyrox").textContent=range(z.hyrox[0],z.hyrox[1])+"/km";
+ const phases=[[1,"Base","Maintenant → mi-nov.","Endurance + vitesse courte."],[2,"Développement","Mi-nov. → 19 déc.","Seuil, 800 m, économie de course."],[3,"Spécifique HYROX","20 déc. → 16 janv.","1 km répétés + fatigue musculaire contrôlée."],[4,"Affûtage","17 janv. → 7 fév.","Réduire le volume et arriver frais."]];
+ $("phaseList").innerHTML=phases.map(x=>`<div class="phase ${x[0]===ph.id?"active":""}"><strong>${x[1]}</strong><div class="subtle">${x[2]} • ${x[3]}</div></div>`).join("");
+ $("sTestDistance").value=state.profile.testDistance;$("sTestTime").value=state.profile.testTime;$("sTarget").value=state.profile.target;$("sFriday").value=state.profile.friday;
+ $("sFatigue").value=state.readiness.fatigue;$("sLegs").value=state.readiness.legs;$("sSleep").value=state.readiness.sleep;
+ renderHistory();drawCharts();stats()
+}
+function saveSettings(){state.profile={testDistance:+$("sTestDistance").value||3,testTime:$("sTestTime").value||"15:00",target:$("sTarget").value||"5:20",friday:$("sFriday").value};save();render()}
+function saveReadiness(){state.readiness={fatigue:+$("sFatigue").value,legs:+$("sLegs").value,sleep:+$("sSleep").value};save();render()}
+function saveJournal(){
+ let item={date:new Date().toISOString().slice(0,10),type:$("jType").value,distance:+$("jDistance").value||0,pace:$("jPace").value.trim(),rpe:+$("jRpe").value||7,after:$("jAfter").value,pain:$("jPain").value};
+ state.feedback.unshift(item);
+ if(item.pain==="yes"){state.adaptation.paceOffset=Math.min(30,(state.adaptation.paceOffset||0)+12);state.adaptation.volume=.75}
+ else if(item.after==="cooked"||item.rpe>=9){state.adaptation.paceOffset=Math.min(25,(state.adaptation.paceOffset||0)+7);state.adaptation.volume=Math.max(.75,(state.adaptation.volume||1)-.1)}
+ else if(item.after==="good"&&item.rpe<=7){state.adaptation.paceOffset=Math.max(-12,(state.adaptation.paceOffset||0)-3);state.adaptation.volume=Math.min(1.1,(state.adaptation.volume||1)+.05)}
+ save();$("journalMsg").textContent="Séance enregistrée. Le plan a été recalculé.";render()
+}
+function afterText(v){return v==="good"?"Encore du jus":v==="cooked"?"Cuit":"Correct"}
+function renderHistory(){
+ let r=state.feedback.slice(0,30).map(x=>`<tr><td>${x.date}</td><td>${x.type}</td><td>${x.distance||"—"}</td><td>${x.pace||"—"}</td><td>${x.rpe}</td><td>${afterText(x.after)}</td></tr>`).join("");
+ $("history").innerHTML=r||'<tr><td colspan="6" class="subtle">Aucune séance enregistrée.</td></tr>'
+}
+function stats(){
+ $("statSessions").textContent=state.feedback.length;
+ $("statKm").textContent=state.feedback.reduce((a,x)=>a+(+x.distance||0),0).toFixed(1);
+ let p=state.feedback.map(x=>sec(x.pace)).filter(Boolean);$("statBest").textContent=p.length?fmt(Math.min(...p))+"/km":"—"
+}
+function drawLine(svgId,vals,min,max,invert=false){
+ const svg=$(svgId); svg.innerHTML="";
+ if(vals.length<2){svg.innerHTML='<text x="300" y="90" text-anchor="middle" fill="#8ea0b2" font-size="16">Ajoute au moins 2 séances</text>';return}
+ const W=600,H=180,pad=22,n=vals.length;
+ const y=v=>pad+(H-pad*2)*(invert?(v-min)/(max-min):(max-v)/(max-min));
+ const pts=vals.map((v,i)=>`${pad+i*(W-pad*2)/(n-1)},${y(v)}`).join(" ");
+ svg.innerHTML=`<line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="#243243"/><polyline fill="none" stroke="#57d6ff" stroke-width="4" points="${pts}"/>`+
+ vals.map((v,i)=>`<circle cx="${pad+i*(W-pad*2)/(n-1)}" cy="${y(v)}" r="5" fill="#d7ff45"/>`).join("")
+}
+function drawCharts(){
+ let f=[...state.feedback].reverse();
+ let p=f.map(x=>sec(x.pace)).filter(Boolean);if(p.length)drawLine("paceChart",p,Math.min(...p)-5,Math.max(...p)+5,true);else $("paceChart").innerHTML='<text x="300" y="90" text-anchor="middle" fill="#8ea0b2" font-size="16">Pas encore de données</text>';
+ let r=f.map(x=>x.rpe).filter(Boolean);if(r.length)drawLine("rpeChart",r,1,10,false);else $("rpeChart").innerHTML='<text x="300" y="90" text-anchor="middle" fill="#8ea0b2" font-size="16">Pas encore de données</text>'
+}
+function nextMonday(){let d=new Date();d.setHours(0,0,0,0);let add=(8-d.getDay())%7||7;d.setDate(d.getDate()+add);return d}
+function pad(n){return String(n).padStart(2,"0")}
+function icsStamp(d,h,m){let x=new Date(d);x.setHours(h,m,0,0);return`${x.getFullYear()}${pad(x.getMonth()+1)}${pad(x.getDate())}T${pad(x.getHours())}${pad(x.getMinutes())}00`}
+function downloadICS(){
+ let mon=nextMonday(),events=[],q=quality(),e=easySession();
+ const add=(off,title,h,m,dur,desc)=>{let d=new Date(mon);d.setDate(mon.getDate()+off);let st=icsStamp(d,h,m),en=icsStamp(d,h+Math.floor((m+dur)/60),(m+dur)%60);events.push(`BEGIN:VEVENT\nUID:${st}-${Math.random().toString(36).slice(2)}@hyroxcoach\nDTSTAMP:${icsStamp(new Date(),12,0)}\nDTSTART:${st}\nDTEND:${en}\nSUMMARY:${title}\nDESCRIPTION:${desc.replace(/,/g,"\\,")}\nEND:VEVENT`)};
+ add(0,"HYROX",18,0,75,"Séance HYROX habituelle.");add(1,"HYROX",19,0,75,"Séance HYROX habituelle.");add(2,"Course facile HYROX Coach",18,30,50,e.desc);add(3,"HYROX",18,30,75,"Séance HYROX habituelle.");add(4,"HYROX",+state.profile.friday,0,75,"Horaire à ajuster selon le travail.");add(6,"Course qualité HYROX Coach",10,0,70,q.desc);
+ let ics=`BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//HYROX Toulouse Coach//FR\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n${events.join("\n")}\nEND:VCALENDAR`;
+ let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([ics],{type:"text/calendar;charset=utf-8"}));a.download="HYROX-semaine.ics";a.click()
+}
+function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="hyrox-coach-data.json";a.click()}
+function resetData(){if(confirm("Réinitialiser toutes les données ?")){localStorage.removeItem(KEY);location.reload()}}
+render();
+if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+</script>
+</body>
+</html>
