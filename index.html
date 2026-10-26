@@ -4,6 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="HYROX Coach">
+<meta name="format-detection" content="telephone=no">
+<meta name="color-scheme" content="dark">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0a0f14">
 <link rel="manifest" href="./manifest.webmanifest">
@@ -20,7 +23,7 @@ html,body{margin:0;min-height:100%;background:
 radial-gradient(circle at 70% -10%,rgba(87,214,255,.12),transparent 34%),
 linear-gradient(180deg,#070b10,#0a1119 48%,#070b10);
 color:var(--txt);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Inter,sans-serif}
-body{padding-bottom:96px}
+body{padding-bottom:96px;overscroll-behavior-y:none;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 button,input,select{font:inherit}
 .app{max-width:900px;margin:auto;padding:env(safe-area-inset-top) 14px 30px}
 .topbar{display:flex;justify-content:space-between;align-items:center;padding:18px 2px 12px}
@@ -30,7 +33,7 @@ button,input,select{font:inherit}
 h1{font-size:24px;line-height:1.05;margin:3px 0 0}
 .datebadge{background:#121d29;border:1px solid var(--line);padding:9px 11px;border-radius:14px;text-align:center}
 .datebadge strong{display:block;font-size:18px}.datebadge span{font-size:10px;color:var(--muted);text-transform:uppercase}
-.screen{display:none}.screen.active{display:block}
+.screen{display:none}.screen.active{display:block;animation:screenIn .18s ease-out}@keyframes screenIn{from{opacity:.25;transform:translateY(5px)}to{opacity:1;transform:none}}
 .hero{position:relative;overflow:hidden;background:
 linear-gradient(140deg,rgba(215,255,69,.14),rgba(87,214,255,.06) 55%,rgba(15,23,33,.95));
 border:1px solid #2a3b4e;border-radius:26px;padding:20px;box-shadow:var(--shadow);margin-top:8px}
@@ -58,13 +61,13 @@ border:1px solid #2a3b4e;border-radius:26px;padding:20px;box-shadow:var(--shadow
 .weekday:last-child{border-bottom:0}.weekday .time{font-size:11px;color:var(--muted);margin-top:2px}
 .weekday .desc{font-size:12px;color:var(--muted);margin-top:2px;line-height:1.35}
 @media(max-width:560px){.weekday{grid-template-columns:62px 1fr}.weekday .chip{grid-column:2;justify-self:start}}
-button{border:0;border-radius:14px;padding:12px 14px;font-weight:850;cursor:pointer}
+button{border:0;border-radius:14px;padding:12px 14px;font-weight:850;cursor:pointer;min-height:44px;touch-action:manipulation}
 .primary{background:var(--lime);color:#0a1015}.secondary{background:#223448;color:#f4f8fb}.ghost{background:transparent;color:#e3edf5;border:1px solid var(--line)}
 .row{display:flex;gap:9px;align-items:center;flex-wrap:wrap}
 .fields{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
 @media(max-width:560px){.fields{grid-template-columns:1fr}}
 label{display:block;color:var(--muted);font-size:11px;margin-bottom:5px}
-input,select{width:100%;background:#0a121a;color:var(--txt);border:1px solid var(--line);border-radius:13px;padding:11px 12px;outline:none}
+input,select{width:100%;background:#0a121a;color:var(--txt);border:1px solid var(--line);border-radius:13px;padding:11px 12px;outline:none;font-size:16px}
 input:focus,select:focus{border-color:var(--cyan)}
 .score{font-size:40px;font-weight:900}
 .gauge{height:10px;background:#0a1118;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:8px}
@@ -72,6 +75,8 @@ input:focus,select:focus{border-color:var(--cyan)}
 .chart{width:100%;height:170px;background:#0b131b;border:1px solid var(--line);border-radius:16px;padding:8px}
 .chart svg{width:100%;height:100%}
 .kpirow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.kpirow.four{grid-template-columns:repeat(4,1fr)}
+@media(max-width:560px){.kpirow.four{grid-template-columns:repeat(2,1fr)}}
 .kpi{padding:11px;background:#0c151e;border:1px solid var(--line);border-radius:14px}
 .kpi b{font-size:19px;display:block}.kpi span{font-size:10px;color:var(--muted);text-transform:uppercase}
 table{width:100%;border-collapse:collapse;font-size:12px}
@@ -86,6 +91,54 @@ th{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.07
 .ring:before{content:"";width:88px;height:88px;border-radius:50%;background:#101923;position:absolute}.ring span{position:relative;font-weight:900;font-size:25px}
 .phase{padding:11px 12px;background:#0a131c;border:1px solid var(--line);border-radius:14px;margin-top:8px}.phase.active{border-color:var(--lime)}
 hr{border:0;border-top:1px solid var(--line);margin:14px 0}
+.actionbtn{padding:7px 9px;border-radius:10px;font-size:11px;font-weight:800;margin:2px}
+.editbtn{background:#223448;color:#f4f8fb}.deletebtn{background:#3b1c25;color:#ffb3c0}.cancelbtn{background:#2c3440;color:#e4edf4}
+.editing{border-color:var(--cyan)!important;box-shadow:0 0 0 1px rgba(87,214,255,.25)}
+
+.coachhero{background:linear-gradient(145deg,rgba(87,214,255,.13),rgba(215,255,69,.08),#101923);border:1px solid #31506a}
+.coachhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.coachstatus{display:inline-flex;align-items:center;gap:7px;padding:7px 10px;border-radius:999px;font-size:11px;font-weight:900}
+.coachstatus.green{background:#12382d;color:#baffdf}.coachstatus.yellow{background:#3a3317;color:#ffe59b}.coachstatus.orange{background:#45291a;color:#ffc697}.coachstatus.red{background:#451c27;color:#ffbdc8}
+.dot{width:8px;height:8px;border-radius:50%;background:currentColor}
+.coachmessage{font-size:20px;font-weight:900;line-height:1.22;margin:12px 0 8px}
+.coachactions{display:grid;gap:8px;margin-top:12px}
+.coachaction{background:#0b151e;border:1px solid var(--line);border-radius:14px;padding:11px 12px;font-size:12px;line-height:1.45}
+.coachaction b{color:var(--lime)}
+.coachgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+@media(max-width:560px){.coachgrid{grid-template-columns:1fr}}
+.metricbox{background:#0b141d;border:1px solid var(--line);border-radius:14px;padding:11px}
+.metricbox b{display:block;font-size:18px}.metricbox span{font-size:10px;color:var(--muted);text-transform:uppercase}
+textarea{width:100%;min-height:86px;background:#0a121a;color:var(--txt);border:1px solid var(--line);border-radius:13px;padding:11px 12px;outline:none;resize:vertical;font:inherit}
+textarea:focus{border-color:var(--cyan)}
+.recoverybar{height:7px;background:#0b1118;border-radius:99px;overflow:hidden;margin-top:6px}.recoverybar div{height:100%;background:linear-gradient(90deg,var(--cyan),var(--lime))}
+.badge{display:inline-block;padding:5px 8px;border-radius:8px;background:#172636;color:#dce9f2;font-size:10px;font-weight:800;margin-right:5px;margin-top:5px}
+.warningbox{background:#2e171e;border:1px solid #61303e;border-left:3px solid var(--bad);padding:11px 12px;border-radius:12px;color:#ffd9df;font-size:12px;line-height:1.45}
+.successbox{background:#10281f;border:1px solid #285343;border-left:3px solid var(--good);padding:11px 12px;border-radius:12px;color:#c9ffe8;font-size:12px;line-height:1.45}
+
+
+/* V5 Nutrition & Hydratation */
+.bottomnav{grid-template-columns:repeat(6,1fr)}
+.navbtn{font-size:9px}
+.foodhero{background:linear-gradient(145deg,rgba(215,255,69,.10),rgba(87,214,255,.08),#101923);border:1px solid #31506a}
+.timeline{position:relative;margin-top:8px}
+.timeline:before{content:"";position:absolute;left:11px;top:10px;bottom:10px;width:2px;background:#253647}
+.timelineitem{position:relative;padding:0 0 16px 34px}
+.timelineitem:last-child{padding-bottom:0}
+.timelineitem:before{content:"";position:absolute;left:5px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--lime);box-shadow:0 0 0 4px #182431}
+.timelineitem .t{font-size:11px;color:var(--cyan);font-weight:900;text-transform:uppercase;letter-spacing:.08em}
+.timelineitem .v{font-size:14px;font-weight:800;margin-top:3px}
+.timelineitem .d{font-size:12px;color:var(--muted);line-height:1.45;margin-top:3px}
+.nutritiongrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(max-width:560px){.nutritiongrid{grid-template-columns:1fr}.bottomnav{grid-template-columns:repeat(6,1fr)}.navbtn{font-size:8px;padding:7px 2px}.navbtn .ico{font-size:18px}}
+.foodplate{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:10px}
+.foodplate div{background:#0b151e;border:1px solid var(--line);padding:10px;border-radius:12px;text-align:center;font-size:11px;color:var(--muted)}
+.foodplate b{display:block;color:var(--txt);font-size:14px;margin-bottom:3px}
+.hydrotimes{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}
+@media(max-width:560px){.hydrotimes{grid-template-columns:repeat(2,1fr)}}
+.reminderpill{display:inline-flex;gap:6px;align-items:center;padding:7px 9px;border-radius:999px;background:#123047;color:#bdefff;font-size:10px;font-weight:800;margin:4px 4px 0 0}
+.racecard{background:linear-gradient(150deg,#182713,#101923 65%);border:1px solid #3e5926}
+.nutriskip{color:var(--muted);font-size:11px;margin-top:8px}
+
 </style>
 </head>
 <body>
@@ -93,12 +146,12 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
   <div class="topbar">
     <div class="brand">
       <img src="./icon-192.png" alt="">
-      <div><div class="eyebrow">Toulouse 2027</div><h1>HYROX Coach</h1></div>
+      <div><div class="eyebrow">Toulouse 2027 • Coach V5</div><h1>HYROX Coach</h1></div>
     </div>
     <div class="datebadge"><strong id="daysTop">—</strong><span>jours</span></div>
   </div>
 
-  <!-- ACCUEIL -->
+  <!-- AUJOURD’HUI -->
   <section id="home" class="screen active">
     <div class="hero">
       <div class="label">Objectif principal</div>
@@ -112,8 +165,43 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
     </div>
 
     <div class="grid">
+      <div class="card coachhero">
+        <div class="coachhead">
+          <div>
+            <div class="eyebrow">Coach HYROX</div>
+            <div id="coachMessage" class="coachmessage">Analyse en cours…</div>
+          </div>
+          <div id="coachStatus" class="coachstatus green"><span class="dot"></span><span>PRÊT</span></div>
+        </div>
+        <div id="coachDetail" class="subtle"></div>
+        <div id="coachActions" class="coachactions"></div>
+        <div class="coachgrid">
+          <div class="metricbox"><b id="coachLoad">—</b><span>Charge 7 jours</span></div>
+          <div class="metricbox"><b id="coachRecovery">—</b><span>Récupération</span><div class="recoverybar"><div id="coachRecoveryBar"></div></div></div>
+          <div class="metricbox"><b id="coachLimiter">—</b><span>Limiteur dominant</span></div>
+        </div>
+      </div>
+      <div class="card foodhero">
+        <div class="eyebrow">Aujourd’hui</div>
+        <h2 style="margin-top:6px">Entraînement + carburant + récupération</h2>
+        <div id="todayOverview" class="notice"></div>
+        <div id="todayNutritionMini" class="nutritiongrid" style="margin-top:10px"></div>
+        <div class="row" style="margin-top:12px">
+          <button class="secondary" onclick="go('nutrition',document.querySelector('[data-screen=nutrition]'))">Voir le plan nutrition</button>
+        </div>
+      </div>
+      <div class="card">
+        <h2>Bilan de la semaine</h2>
+        <div class="kpirow four">
+          <div class="kpi"><b id="weekHyrox">0</b><span>HYROX</span></div>
+          <div class="kpi"><b id="weekRuns">0</b><span>Course</span></div>
+          <div class="kpi"><b id="weekKm">0</b><span>Km</span></div>
+          <div class="kpi"><b id="weekRpe">—</b><span>RPE moyen</span></div>
+        </div>
+        <div id="weekAdvice" class="notice" style="margin-top:12px"></div>
+      </div>
       <div class="card s8">
-        <h2>Prochaine séance course</h2>
+        <h2 id="nextRunHeading">Prochaine séance course</h2>
         <div id="homeSession" class="session"></div>
       </div>
       <div class="card s4">
@@ -143,16 +231,25 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
   <!-- PLAN -->
   <section id="plan" class="screen">
     <div class="sectiontitle">Plan</div>
-    <div class="sectionintro">Ta semaine s’adapte selon ta fatigue et la phase de préparation.</div>
+    <div class="sectionintro">Ta semaine s’adapte selon ta fatigue, tes séances réellement effectuées et la phase de préparation.</div>
+    <div id="planWeekSummary" class="notice" style="margin-bottom:12px"></div>
     <div class="card">
       <h2>Semaine d’entraînement</h2>
       <div id="planWeek"></div>
       <div class="row" style="margin-top:14px">
-        <button class="primary" onclick="downloadICS()">Ajouter au Calendrier Apple</button>
+        <button class="primary" onclick="downloadICS()">Calendrier Apple : séances + rappels</button>
         <button class="secondary" onclick="render()">Recalculer</button>
       </div>
     </div>
     <div class="grid">
+      <div class="card s6">
+        <h2>Prescription récupération</h2>
+        <div id="recoveryPrescription"></div>
+      </div>
+      <div class="card s6">
+        <h2>Focus HYROX actuel</h2>
+        <div id="hyroxFocus"></div>
+      </div>
       <div class="card s6"><h2>Phase actuelle</h2><div id="phaseList"></div></div>
       <div class="card s6">
         <h2>Allures de travail</h2>
@@ -180,6 +277,11 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
         <h2>RPE</h2>
         <div class="chart"><svg id="rpeChart" viewBox="0 0 600 180" preserveAspectRatio="none"></svg></div>
       </div>
+      <div class="card">
+        <h2>Charge d’entraînement par séance</h2>
+        <div class="chart"><svg id="loadChart" viewBox="0 0 600 180" preserveAspectRatio="none"></svg></div>
+        <div class="subtle" style="margin-top:8px">Charge = durée × RPE. Pour les anciennes séances sans durée, l’app utilise une durée estimée.</div>
+      </div>
       <div class="card s4"><div class="label">Séances enregistrées</div><div class="score" id="statSessions">0</div></div>
       <div class="card s4"><div class="label">Km enregistrés</div><div class="score" id="statKm">0</div></div>
       <div class="card s4"><div class="label">Meilleure allure</div><div class="score" style="font-size:28px" id="statBest">—</div></div>
@@ -192,19 +294,92 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
     <div class="sectionintro">Après une séance, dis à l’app ce qui s’est réellement passé.</div>
     <div class="card">
       <div class="fields">
-        <div><label>Type de séance</label><select id="jType"><option>Course facile</option><option>Séance qualité</option><option>HYROX</option><option>Test course</option></select></div>
+        <div><label>Date</label><input id="jDate" type="date"></div>
+        <div><label>Type de séance</label><select id="jType"><option>Course facile</option><option>Séance qualité</option><option>HYROX</option><option>Test course</option><option>VTT / récupération</option></select></div>
+        <div><label>Durée (minutes)</label><input id="jDuration" type="number" min="1" step="1" placeholder="ex. 70"></div>
         <div><label>Distance (km)</label><input id="jDistance" type="number" step=".1" placeholder="ex. 5"></div>
         <div><label>Allure moyenne (mm:ss/km)</label><input id="jPace" placeholder="ex. 5:38"></div>
         <div><label>RPE 1–10</label><input id="jRpe" type="number" min="1" max="10" value="7"></div>
-        <div><label>Après la course</label><select id="jAfter"><option value="good">Encore du jus</option><option value="medium" selected>Correct</option><option value="cooked">Cuit pour les ateliers</option></select></div>
+        <div><label>FC moyenne (facultatif)</label><input id="jAvgHr" type="number" min="40" max="230" placeholder="ex. 165"></div>
+        <div><label>FC max (facultatif)</label><input id="jMaxHr" type="number" min="40" max="240" placeholder="ex. 188"></div>
+        <div><label>État à la fin</label><select id="jAfter"><option value="good">Encore du jus</option><option value="medium" selected>Correct</option><option value="cooked">Cuit</option></select></div>
+        <div><label>Ce qui t’a le plus limité</label><select id="jLimiter"><option value="none">Rien de particulier</option><option value="run">Course / souffle</option><option value="legs">Jambes</option><option value="stations">Ateliers / force</option><option value="technique">Technique / transitions</option><option value="overall">Fatigue générale</option></select></div>
         <div><label>Douleur ?</label><select id="jPain"><option value="no" selected>Non</option><option value="yes">Oui</option></select></div>
+        <div><label>Qualité ressentie</label><select id="jQuality"><option value="good">Bonne</option><option value="normal" selected>Normale</option><option value="poor">Mauvaise</option></select></div>
+        <div style="grid-column:1/-1"><label>Notes (facultatif)</label><textarea id="jNotes" placeholder="Ex. bonnes sensations sur les runs, burpees difficiles, jambes lourdes…"></textarea></div>
       </div>
-      <button class="primary" style="width:100%;margin-top:12px" onclick="saveJournal()">Enregistrer la séance</button>
-      <div id="journalMsg" class="subtle" style="margin-top:8px"></div>
+      <div class="row" style="margin-top:12px">
+        <button id="saveJournalBtn" class="primary" style="flex:1" onclick="saveJournal()">Enregistrer la séance</button>
+        <button id="cancelEditBtn" class="cancelbtn" style="display:none" onclick="cancelEdit()">Annuler</button>
+      </div>
+      <div id="journalMsg" class="subtle" style="margin-top:8px"></div><div id="postCoach" style="margin-top:10px"></div>
     </div>
     <div class="card" style="margin-top:12px">
       <h2>Historique</h2>
-      <div style="overflow:auto"><table><thead><tr><th>Date</th><th>Type</th><th>Km</th><th>Allure</th><th>RPE</th><th>État</th></tr></thead><tbody id="history"></tbody></table></div>
+      <div style="overflow:auto"><table><thead><tr><th>Date</th><th>Type</th><th>Durée</th><th>Km</th><th>Allure</th><th>RPE</th><th>Charge</th><th>Limiteur</th><th>État</th><th>Actions</th></tr></thead><tbody id="history"></tbody></table></div>
+    </div>
+  </section>
+
+
+  <!-- NUTRITION -->
+  <section id="nutrition" class="screen">
+    <div class="sectiontitle">Nutrition</div>
+    <div class="sectionintro">Carburant, hydratation et récupération adaptés à ta journée d’entraînement. Les repères restent volontairement simples et doivent être testés à l’entraînement.</div>
+
+    <div class="card foodhero">
+      <div class="eyebrow">Plan du jour</div>
+      <h2 id="nutritionDayTitle" style="font-size:24px;margin-top:6px">Aujourd’hui</h2>
+      <div id="nutritionDaySummary" class="notice"></div>
+      <div id="nutritionTimeline" class="timeline"></div>
+    </div>
+
+    <div class="grid">
+      <div class="card s6">
+        <h2>Assiette de base</h2>
+        <div class="subtle">Le volume de glucides varie avec la charge du jour ; les protéines, les végétaux et les aliments peu transformés restent réguliers.</div>
+        <div class="foodplate">
+          <div><b>Glucides</b><span id="plateCarbs">Modérés</span></div>
+          <div><b>Protéines</b><span>À chaque repas</span></div>
+          <div><b>Végétaux</b><span>Variés</span></div>
+        </div>
+        <div id="weightTargets" class="notice" style="margin-top:12px"></div>
+      </div>
+
+      <div class="card s6">
+        <h2>Hydratation</h2>
+        <div id="hydrationAdvice" class="notice"></div>
+        <div style="margin-top:12px">
+          <div class="subtle">Rappels quotidiens configurés</div>
+          <div id="hydrationPills"></div>
+        </div>
+        <button class="secondary" style="width:100%;margin-top:12px" onclick="downloadHydrationICS()">Ajouter 7 jours de rappels au Calendrier Apple</button>
+        <div class="nutriskip">Les rappels servent à penser à boire régulièrement, pas à forcer une quantité fixe. Évite de boire au point de te sentir ballonné ou de prendre du poids pendant l’effort.</div>
+      </div>
+
+      <div class="card s6">
+        <h2>Avant / pendant / après</h2>
+        <div id="sessionFuelCards"></div>
+      </div>
+
+      <div class="card s6 racecard">
+        <div class="eyebrow">Toulouse 2027</div>
+        <h2>Plan compétition</h2>
+        <div id="raceNutritionPlan"></div>
+      </div>
+
+      <div class="card">
+        <h2>Réglages nutrition & rappels</h2>
+        <div class="fields">
+          <div><label>Poids (kg, facultatif)</label><input id="nWeight" type="number" min="35" max="250" step=".1" placeholder="Pour calculer les repères g/kg"></div>
+          <div><label>Préférence</label><select id="nDiet"><option value="standard">Standard</option><option value="vegetarian">Végétarien</option></select></div>
+          <div><label>Sensibilité digestive avant effort</label><select id="nGut"><option value="normal">Normale</option><option value="sensitive">Sensible</option></select></div>
+          <div><label>Rappel hydratation 1</label><input id="nHydro1" type="time"></div>
+          <div><label>Rappel hydratation 2</label><input id="nHydro2" type="time"></div>
+          <div><label>Rappel hydratation 3</label><input id="nHydro3" type="time"></div>
+          <div><label>Rappel hydratation 4</label><input id="nHydro4" type="time"></div>
+        </div>
+        <button class="primary" style="width:100%;margin-top:12px" onclick="saveNutritionSettings()">Enregistrer les réglages nutrition</button>
+      </div>
     </div>
   </section>
 
@@ -229,12 +404,22 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
           <div><label>Fatigue</label><select id="sFatigue"><option value="1">1 — très frais</option><option value="2">2</option><option value="3">3 — normal</option><option value="4">4</option><option value="5">5 — très fatigué</option></select></div>
           <div><label>Jambes</label><select id="sLegs"><option value="1">1 — lourdes</option><option value="2">2</option><option value="3">3 — normal</option><option value="4">4</option><option value="5">5 — très bonnes</option></select></div>
           <div><label>Sommeil</label><select id="sSleep"><option value="1">Mauvais</option><option value="2">Moyen</option><option value="3">Bon</option></select></div>
+          <div><label>Stress</label><select id="sStress"><option value="1">1 — faible</option><option value="2">2</option><option value="3">3 — normal</option><option value="4">4</option><option value="5">5 — très élevé</option></select></div>
+          <div><label>Courbatures</label><select id="sSoreness"><option value="1">1 — aucune</option><option value="2">2</option><option value="3">3 — normales</option><option value="4">4</option><option value="5">5 — fortes</option></select></div>
+          <div><label>Motivation</label><select id="sMotivation"><option value="1">1 — très basse</option><option value="2">2</option><option value="3">3 — normale</option><option value="4">4</option><option value="5">5 — excellente</option></select></div>
         </div>
         <button class="secondary" style="width:100%;margin-top:12px" onclick="saveReadiness()">Mettre à jour la fatigue</button>
       </div>
       <div class="card">
+        <h2>Rappels V5</h2>
+        <div class="notice">L’export des séances ajoute une alerte 2 h avant, une alerte 1 h avant et un rappel récupération après la séance. Les rappels d’hydratation se téléchargent séparément depuis l’onglet Nutrition.</div>
+      </div>
+      <div class="card">
+        <h2>Application</h2><div class="notice">HYROX Coach V5.1 • PWA optimisée iPhone • données locales • mise à jour automatique du cache.</div>
+      </div>
+      <div class="card">
         <h2>Données</h2>
-        <div class="row"><button class="ghost" onclick="exportData()">Exporter mes données</button><button class="ghost" onclick="resetData()">Réinitialiser</button></div>
+        <div class="row"><button class="ghost" onclick="exportData()">Exporter mes données</button><button class="ghost" onclick="document.getElementById('importDataFile').click()">Importer une sauvegarde</button><input id="importDataFile" type="file" accept="application/json,.json" style="display:none" onchange="importData(event)"><button class="ghost" onclick="resetData()">Réinitialiser</button></div>
         <div class="notice" style="margin-top:12px">Tes données restent pour l’instant dans le navigateur de ton iPhone. Il n’y a ni compte ni serveur externe.</div>
       </div>
     </div>
@@ -242,8 +427,9 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
 </div>
 
 <nav class="bottomnav">
-  <button class="navbtn active" data-screen="home" onclick="go('home',this)"><span class="ico">⌂</span>Accueil</button>
+  <button class="navbtn active" data-screen="home" onclick="go('home',this)"><span class="ico">⌂</span>Aujourd’hui</button>
   <button class="navbtn" data-screen="plan" onclick="go('plan',this)"><span class="ico">▦</span>Plan</button>
+  <button class="navbtn" data-screen="nutrition" onclick="go('nutrition',this)"><span class="ico">◉</span>Nutrition</button>
   <button class="navbtn" data-screen="progress" onclick="go('progress',this)"><span class="ico">↗</span>Progrès</button>
   <button class="navbtn" data-screen="journal" onclick="go('journal',this)"><span class="ico">＋</span>Journal</button>
   <button class="navbtn" data-screen="settings" onclick="go('settings',this)"><span class="ico">⚙</span>Réglages</button>
@@ -251,119 +437,459 @@ hr{border:0;border-top:1px solid var(--line);margin:14px 0}
 
 <script>
 const RACE=new Date("2027-02-07T08:00:00"), START=new Date("2026-10-21T00:00:00");
-const KEY="hyroxToulouseBeautifulAppV1";
-let state=JSON.parse(localStorage.getItem(KEY)||"null")||{
- profile:{testDistance:3,testTime:"15:00",target:"5:20",friday:"19"},
- readiness:{fatigue:3,legs:3,sleep:3},
- feedback:[],
- adaptation:{paceOffset:0,volume:1}
+const KEY="hyroxToulouseBeautifulAppV1"; // clé historique conservée pour V1→V5.1
+const UI_KEY="hyroxCoachUiV1";
+const DEFAULTS={
+ profile:{testDistance:3,testTime:"15:00",target:"5:20",friday:"19",format:"Doubles Men Open"},
+ readiness:{fatigue:3,legs:3,sleep:3,stress:3,soreness:3,motivation:3},
+ feedback:[], adaptation:{paceOffset:0,volume:1}, coach:{lastMessage:""}, nutrition:{weight:"",diet:"standard",gut:"normal",hydrationTimes:["09:30","12:30","15:30","18:30"]}
 };
+let state=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(DEFAULTS);
+let editingId=null;
 const $=id=>document.getElementById(id);
-function save(){localStorage.setItem(KEY,JSON.stringify(state))}
+
+function migrate(){
+ state.profile={...DEFAULTS.profile,...(state.profile||{})};
+ state.readiness={...DEFAULTS.readiness,...(state.readiness||{})};
+ state.feedback=(state.feedback||[]).map((x,i)=>({
+   id:x.id||`legacy-${x.date||"session"}-${i}-${Math.random().toString(36).slice(2,8)}`,
+   date:x.date||localDate(),type:x.type||"HYROX",duration:+x.duration||0,distance:+x.distance||0,
+   pace:x.pace||"",rpe:+x.rpe||7,avgHr:+x.avgHr||0,maxHr:+x.maxHr||0,
+   after:x.after||"medium",limiter:x.limiter||"none",pain:x.pain||"no",
+   quality:x.quality||"normal",notes:x.notes||""
+ }));
+ state.adaptation={...DEFAULTS.adaptation,...(state.adaptation||{})};
+ state.coach={...DEFAULTS.coach,...(state.coach||{})};
+ state.nutrition={...DEFAULTS.nutrition,...(state.nutrition||{})};
+ if(!Array.isArray(state.nutrition.hydrationTimes)||state.nutrition.hydrationTimes.length!==4)state.nutrition.hydrationTimes=[...DEFAULTS.nutrition.hydrationTimes];
+ save();
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(state));return true}catch(e){console.error(e);return false}}
+function localDate(d=new Date()){return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`}
+function parseLocalDate(s){let [y,m,d]=s.split("-").map(Number);return new Date(y,m-1,d)}
 function sec(s){if(!s)return null;let p=s.trim().split(":").map(Number);if(p.some(isNaN))return null;return p.length===2?p[0]*60+p[1]:p.length===3?p[0]*3600+p[1]*60+p[2]:null}
-function fmt(x){if(!isFinite(x))return"—";let m=Math.floor(x/60),s=Math.round(x%60);if(s===60){m++;s=0}return`${m}:${String(s).padStart(2,"0")}`}
+function fmt(x){if(!isFinite(x))return"—";let m=Math.floor(x/60),ss=Math.round(x%60);if(ss===60){m++;ss=0}return`${m}:${String(ss).padStart(2,"0")}`}
 function range(a,b){return`${fmt(a)}–${fmt(b)}`}
 function today(){let d=new Date();d.setHours(0,0,0,0);return d}
+function addDays(d,n){let x=new Date(d);x.setDate(x.getDate()+n);return x}
+function mondayOf(d=new Date()){let x=new Date(d);x.setHours(0,0,0,0);let day=x.getDay();x.setDate(x.getDate()-(day===0?6:day-1));return x}
 function days(){return Math.max(0,Math.ceil((RACE-today())/86400000))}
 function benchmark(){return(sec(state.profile.testTime)||900)/(state.profile.testDistance||3)}
+function weekIndex(){return Math.max(0,Math.floor((today()-START)/604800000))}
+function isDeloadWeek(){return weekIndex()>0&&weekIndex()%4===3}
 function phase(){let d=days();if(d>84)return{id:1,name:"Base",sub:"Construire le moteur"};if(d>49)return{id:2,name:"Développement",sub:"Seuil + intervalles"};if(d>21)return{id:3,name:"Spécifique",sub:"1 km sous fatigue contrôlée"};return{id:4,name:"Affûtage",sub:"Moins de volume, plus de fraîcheur"}}
-function readiness(){let r=state.readiness;return Math.max(0,Math.min(100,55+(r.legs-3)*10-(r.fatigue-3)*12+(r.sleep-2)*10))}
+function readiness(){
+ let r=state.readiness;
+ let score=60+(r.legs-3)*8-(r.fatigue-3)*11+(r.sleep-2)*10-(r.stress-3)*7-(r.soreness-3)*8+(r.motivation-3)*5;
+ return Math.max(0,Math.min(100,Math.round(score)))
+}
+function estimatedDuration(x){
+ if(+x.duration>0)return +x.duration;
+ if(x.type==="HYROX")return 70;
+ if(x.type==="Séance qualité"||x.type==="Test course")return 55;
+ if(x.type==="VTT / récupération")return 60;
+ return 40;
+}
+function sessionLoad(x){return Math.round(estimatedDuration(x)*(+x.rpe||0))}
+function sessionsBetween(start,end){return state.feedback.filter(x=>{let d=parseLocalDate(x.date);return d>=start&&d<=end})}
+function metrics(items){
+ let hyrox=items.filter(x=>x.type==="HYROX").length;
+ let runs=items.filter(x=>["Course facile","Séance qualité","Test course"].includes(x.type)).length;
+ let km=items.reduce((a,x)=>a+(+x.distance||0),0), rs=items.map(x=>+x.rpe||0).filter(Boolean);
+ let avg=rs.length?rs.reduce((a,b)=>a+b,0)/rs.length:0;
+ let cooked=items.filter(x=>x.after==="cooked").length,pain=items.filter(x=>x.pain==="yes").length;
+ let load=items.reduce((a,x)=>a+sessionLoad(x),0),mins=items.reduce((a,x)=>a+estimatedDuration(x),0);
+ return{sessions:items.length,hyrox,runs,km,avg,cooked,pain,load,mins}
+}
+function weekMetrics(){let m=mondayOf(),sun=addDays(m,6);return metrics(sessionsBetween(m,sun))}
+function recentMetrics(back=7){let end=today(),start=addDays(end,-(back-1));return metrics(sessionsBetween(start,end))}
+function previousLoadAverage(){
+ let values=[];
+ for(let k=1;k<=3;k++){let end=addDays(today(),-7*k),start=addDays(end,-6);values.push(metrics(sessionsBetween(start,end)).load)}
+ let nonzero=values.filter(v=>v>0);return nonzero.length?nonzero.reduce((a,b)=>a+b,0)/nonzero.length:0
+}
+function loadTrend(){
+ let cur=recentMetrics(7).load,prev=previousLoadAverage();
+ if(!cur)return{level:"low",label:"Faible",detail:"Peu de charge enregistrée cette semaine."};
+ if(!prev){
+   if(cur>2500)return{level:"high",label:"Très élevée",detail:"Charge importante : reste prudent tant que l’app n’a pas assez d’historique."};
+   if(cur>1700)return{level:"medium",label:"Modérée",detail:"Charge déjà conséquente cette semaine."};
+   return{level:"low",label:"Maîtrisée",detail:"Charge actuellement maîtrisée."}
+ }
+ let ratio=cur/prev;
+ if(ratio>1.35)return{level:"high",label:"En hausse",detail:"La charge des 7 derniers jours est nettement supérieure à tes semaines récentes."};
+ if(ratio>1.12)return{level:"medium",label:"En progression",detail:"La charge monte : progression acceptable si les sensations restent bonnes."};
+ return{level:"low",label:"Stable",detail:"Charge proche de tes dernières semaines."}
+}
+function recentPain(){let start=addDays(today(),-7);return sessionsBetween(start,today()).some(x=>x.pain==="yes")}
+function limiterLabel(v){return({run:"Course / souffle",legs:"Jambes",stations:"Ateliers / force",technique:"Technique",overall:"Fatigue générale",none:"Aucun"})[v]||"Aucun"}
+function dominantLimiter(daysBack=14){
+ let start=addDays(today(),-(daysBack-1)),items=sessionsBetween(start,today()).filter(x=>x.limiter&&x.limiter!=="none");
+ if(!items.length)return"none";
+ let c={};items.forEach(x=>c[x.limiter]=(c[x.limiter]||0)+1);
+ return Object.entries(c).sort((a,b)=>b[1]-a[1])[0][0]
+}
+function deriveAdaptation(){
+ let a={paceOffset:0,volume:1};
+ [...state.feedback].sort((a,b)=>a.date.localeCompare(b.date)).slice(-12).forEach(item=>{
+  if(item.pain==="yes"){a.paceOffset=Math.min(30,a.paceOffset+10);a.volume=Math.min(a.volume,.75)}
+  else if(item.after==="cooked"||(+item.rpe||0)>=9){a.paceOffset=Math.min(25,a.paceOffset+6);a.volume=Math.max(.75,a.volume-.08)}
+  else if(item.after==="good"&&(+item.rpe||0)<=7&&item.quality!=="poor"){a.paceOffset=Math.max(-12,a.paceOffset-2);a.volume=Math.min(1.08,a.volume+.04)}
+ });
+ state.adaptation=a; return a
+}
 function hyroxCenter(){
- let b=benchmark(), target=sec(state.profile.target)||320, total=Math.max(1,(RACE-START)/86400000), prog=Math.max(0,Math.min(1,1-days()/total));
- let base=b+42, planned=base+(target-base)*prog*.78;
- return Math.max(target,planned+(state.adaptation.paceOffset||0));
+ let b=benchmark(),target=sec(state.profile.target)||320,total=Math.max(1,(RACE-START)/86400000),prog=Math.max(0,Math.min(1,1-days()/total));
+ let base=b+42,planned=base+(target-base)*prog*.78;return Math.max(target,planned+(state.adaptation.paceOffset||0))
 }
 function zones(){let b=benchmark(),h=hyroxCenter();return{easy:[b+75,b+105],tempo:[b+25,b+40],interval:[b+2,b+15],hyrox:[h-7,h+8]}}
-function easySession(){let z=zones(),s=readiness(),m=s<45?35:s<70?40:45;return{title:`${m} min facile`,desc:`Reste entre ${range(z.easy[0],z.easy[1])}/km. Conversation possible. Aucun objectif de chrono.`}}
+function loadLevel(){
+ let m=recentMetrics(7),trend=loadTrend(),r=readiness();
+ if(recentPain()||trend.level==="high"||m.cooked>=2||(m.sessions>=4&&m.avg>=8.2)||r<40)return"high";
+ if(trend.level==="medium"||m.cooked===1||(m.sessions>=4&&m.avg>=7.3)||m.sessions>=5||r<60)return"medium";
+ return"low"
+}
+function coachState(){
+ let r=readiness(),l=loadLevel(),pain=recentPain(),lim=dominantLimiter(),trend=loadTrend();
+ if(pain)return{color:"red",status:"PRUDENCE",message:"Priorité récupération aujourd’hui.",detail:"Une douleur a été signalée récemment. L’app évite l’intensité tant que le problème n’est pas clarifié."};
+ if(l==="high"||r<40)return{color:"orange",status:"RÉCUPÉRER",message:"Ton corps demande une journée plus légère.",detail:`Récupération ${r}/100. ${trend.detail}`};
+ if(l==="medium"||r<65)return{color:"yellow",status:"AJUSTER",message:"Tu peux t’entraîner, mais sans chercher à battre des records.",detail:`Récupération ${r}/100. ${trend.detail}`};
+ return{color:"green",status:"PRÊT",message:"Tu peux suivre le plan prévu.",detail:`Récupération ${r}/100. ${trend.detail}`}
+}
+function coachActions(){
+ let c=coachState(),lim=dominantLimiter(),z=zones(),actions=[];
+ if(c.color==="red"){
+  actions.push("<b>Entraînement :</b> pas de séance intense si la douleur est encore présente.");
+  actions.push("<b>Surveillance :</b> si la douleur persiste, s’aggrave ou modifie ta façon de courir, fais-la évaluer par un professionnel de santé.");
+ } else if(c.color==="orange"){
+  actions.push(`<b>Course :</b> privilégie 30–40 min très faciles autour de ${range(z.easy[0]+10,z.easy[1]+20)}/km ou du repos.`);
+  actions.push("<b>HYROX :</b> si tu participes à la séance, reste technique et contrôlé, sans finir à l’échec.");
+ } else if(c.color==="yellow"){
+  actions.push("<b>Objectif :</b> respecte les allures prescrites et garde 1–2 niveaux de RPE de marge.");
+ } else {
+  actions.push("<b>Objectif :</b> exécute la séance prévue proprement, sans transformer chaque entraînement en test.");
+ }
+ if(lim==="run")actions.push("<b>Limiteur dominant :</b> course/souffle. Priorité à l’endurance facile et à la qualité contrôlée, pas à plus de volume HYROX dur.");
+ if(lim==="legs")actions.push("<b>Limiteur dominant :</b> jambes. Garde la course facile vraiment facile et évite d’ajouter du travail jambes lourd inutile.");
+ if(lim==="stations")actions.push("<b>Limiteur dominant :</b> ateliers. Ne force pas l’allure de course : profite des séances HYROX pour améliorer économie et technique sur les stations.");
+ if(lim==="technique")actions.push("<b>Limiteur dominant :</b> technique/transitions. Cherche des mouvements propres et des transitions calmes avant de vouloir aller plus vite.");
+ if(lim==="overall")actions.push("<b>Limiteur dominant :</b> fatigue générale. Le gain vient d’abord de la récupération et de la régularité.");
+ return actions
+}
+function easySession(){
+ let z=zones(),s=readiness(),l=loadLevel();
+ if(s<45||l==="high")return{tag:"Récupération",title:"30–35 min récupération",desc:`Très facile entre ${range(z.easy[0]+10,z.easy[1]+20)}/km. Si les jambes sont lourdes, remplace par repos ou marche.`,load:"Faible"};
+ let m=(l==="medium"||s<70)?35:45;if(isDeloadWeek())m=Math.min(m,35);
+ return{tag:"Endurance",title:`${m} min facile`,desc:`Reste entre ${range(z.easy[0],z.easy[1])}/km. Conversation possible. Tu dois finir plus frais que tu n’as commencé.`,load:"Facile"}
+}
 function quality(){
- let z=zones(),p=phase().id,s=readiness(),v=state.adaptation.volume||1;
- if(s<45)return{tag:"Récupération",title:"35–40 min très faciles",desc:`Cours entre ${range(z.easy[0]+10,z.easy[1]+15)}/km. Pas de fractionné cette semaine.`,load:"Faible"};
- if(p===1){let r=Math.max(4,Math.round(6*v));return{tag:"Intervalles courts",title:`${r} × 400 m`,desc:`15 min faciles, puis ${r} × 400 m à ${range(z.interval[0],z.interval[1])}/km. Récupération 1 min 30, puis 10 min faciles.`,load:"Modérée"}}
- if(p===2){let r=Math.max(3,Math.round(5*v));return{tag:"Intervalles",title:`${r} × 800 m`,desc:`15 min faciles, puis ${r} × 800 m à ${range(z.interval[0]+4,z.interval[1]+8)}/km. Récupération 2 min.`,load:"Élevée"}}
- if(p===3){let r=Math.max(4,Math.round(5*v));return{tag:"Spécifique HYROX",title:`${r} × 1 km contrôlés`,desc:`15 min faciles. Puis ${r} × 1 km à ${range(z.hyrox[0],z.hyrox[1])}/km, récupération 90 s. Sur 2 répétitions : 10 burpees OU 20 fentes avant le km.`,load:"Élevée"}}
- return{tag:"Rappel allure",title:"4 × 1 km propre",desc:`15 min faciles. 4 × 1 km à ${range(z.hyrox[0],z.hyrox[1])}/km, récupération 90 s. Tu dois finir avec de la marge.`,load:"Modérée"}
+ let z=zones(),p=phase().id,s=readiness(),v=state.adaptation.volume||1,l=loadLevel();
+ if(s<45||l==="high")return{tag:"Récupération",title:"35–40 min très faciles",desc:`Semaine déjà chargée : cours entre ${range(z.easy[0]+10,z.easy[1]+15)}/km. Pas de fractionné.`,load:"Faible"};
+ if(l==="medium")v=Math.max(.75,v-.12);
+ if(isDeloadWeek())v=Math.max(.7,v*.8);
+ if(p===1){let r=Math.max(4,Math.round(6*v));return{tag:"Intervalles courts",title:`${r} × 400 m`,desc:`15 min faciles, puis ${r} × 400 m à ${range(z.interval[0],z.interval[1])}/km. Récupération 1 min 30. Finis par 10 min faciles.`,load:"Modérée"}}
+ if(p===2){let r=Math.max(3,Math.round(5*v));return{tag:"Développement",title:`${r} × 800 m`,desc:`15 min faciles, puis ${r} × 800 m à ${range(z.interval[0]+4,z.interval[1]+8)}/km. Récupération 2 min. La dernière répétition doit rester propre.`,load:"Élevée"}}
+ if(p===3){let r=Math.max(4,Math.round(5*v));return{tag:"Spécifique HYROX",title:`${r} × 1 km contrôlés`,desc:`15 min faciles. Puis ${r} × 1 km à ${range(z.hyrox[0],z.hyrox[1])}/km, récupération 90 s. Sur 2 répétitions seulement : 10 burpees OU 20 fentes avant le km.`,load:"Élevée"}}
+ return{tag:"Affûtage",title:"4 × 1 km propre",desc:`15 min faciles. 4 × 1 km à ${range(z.hyrox[0],z.hyrox[1])}/km, récupération 90 s. Aucune station lourde. Tu dois finir avec de la marge.`,load:"Modérée"}
 }
 function week(){
- let e=easySession(),q=quality();
+ let e=easySession(),q=quality(),m=mondayOf(),l=loadLevel();
+ let hyroxDesc=l==="high"?"Séance contrôlée : technique, ne pas finir à l’échec.":"Séance habituelle. Garde de la marge si la semaine s’alourdit.";
  return[
-  ["Lun.","18:00","HYROX","Séance habituelle","hyrox"],
-  ["Mar.","19:00","HYROX","Séance habituelle","hyrox"],
-  ["Mer.","—",e.title,e.desc,"easy"],
-  ["Jeu.","18:30","HYROX","Séance habituelle","hyrox"],
-  ["Ven.",state.profile.friday+":00","HYROX","Selon ton travail","hyrox"],
-  ["Sam.","—","Repos / récup.","VTT tranquille possible si jambes fraîches","rest"],
-  ["Dim.","—",q.title,q.desc,"quality"]
+  ["Lun.","18:00","HYROX",hyroxDesc,"hyrox",localDate(addDays(m,0))],
+  ["Mar.","19:00","HYROX",hyroxDesc,"hyrox",localDate(addDays(m,1))],
+  ["Mer.","—",e.title,e.desc,"easy",localDate(addDays(m,2))],
+  ["Jeu.","18:30","HYROX",hyroxDesc,"hyrox",localDate(addDays(m,3))],
+  ["Ven.",state.profile.friday+":00","HYROX",l==="high"?"Si fatigue importante : RPE plafonné à 6–7 ou récupération.":"Selon ton travail et ta fraîcheur.","hyrox",localDate(addDays(m,4))],
+  ["Sam.","—","Repos / récupération","Marche, mobilité légère ou VTT très facile si tu en as envie.","rest",localDate(addDays(m,5))],
+  ["Dim.","—",q.title,q.desc,"quality",localDate(addDays(m,6))]
  ]
 }
-function weekHtml(){return week().map(x=>`<div class="weekday"><div><strong>${x[0]}</strong><div class="time">${x[1]}</div></div><div><strong>${x[2]}</strong><div class="desc">${x[3]}</div></div><span class="chip ${x[4]==="quality"?"warn":x[4]==="easy"?"good":""}">${x[4]==="quality"?"Séance clé":x[4]==="easy"?"Course":x[4]==="rest"?"Récup":"HYROX"}</span></div>`).join("")}
-function go(id,btn){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".navbtn").forEach(x=>x.classList.remove("active"));btn.classList.add("active");window.scrollTo({top:0,behavior:"smooth"});if(id==="progress")drawCharts()}
+function weekHtml(){return week().map(x=>{let done=state.feedback.filter(f=>f.date===x[5]).length;let label=done?`✓ ${done} enregistrée${done>1?"s":""}`:x[4]==="quality"?"Séance clé":x[4]==="easy"?"Course":x[4]==="rest"?"Récup":"HYROX";return`<div class="weekday"><div><strong>${x[0]}</strong><div class="time">${x[1]}</div></div><div><strong>${x[2]}</strong><div class="desc">${x[3]}</div></div><span class="chip ${done?"good":x[4]==="quality"?"warn":x[4]==="easy"?"good":""}">${label}</span></div>`}).join("")}
+function weeklySummaryText(){
+ let m=weekMetrics(),l=loadLevel(),trend=loadTrend();
+ if(!m.sessions)return"Aucune séance enregistrée cette semaine. Enregistre aussi tes séances HYROX : le coach a besoin de la charge totale, pas seulement de la course.";
+ let base=`${m.sessions} séance${m.sessions>1?"s":""} : ${m.hyrox} HYROX, ${m.runs} course${m.runs>1?"s":""}${m.km?`, ${m.km.toFixed(1)} km`:""}, ${m.mins} min estimées/enregistrées, RPE moyen ${m.avg?m.avg.toFixed(1):"—"}/10, charge ${m.load}. `;
+ if(l==="high")return base+"Charge élevée : priorité à l’assimilation. Le coach allège automatiquement les séances course.";
+ if(l==="medium")return base+"Charge modérée : poursuis sans rajouter d’intensité non prévue.";
+ return base+`Charge maîtrisée. ${trend.detail}`
+}
+function nextRun(){
+ let m=mondayOf(),wed=addDays(m,2),sun=addDays(m,6),t=today(),wedDone=state.feedback.some(x=>x.date===localDate(wed)),sunDone=state.feedback.some(x=>x.date===localDate(sun));
+ if(t<=wed&&!wedDone)return{label:"Prochaine séance course — mercredi",...easySession()};
+ if(t<=sun&&!sunDone)return{label:"Prochaine séance course — dimanche",...quality()};
+ return{label:"Prochaine séance course — mercredi prochain",...easySession()}
+}
+function recoveryPrescription(){
+ let c=coachState(),r=readiness(),m=recentMetrics(7);
+ let sleep=state.readiness.sleep===1?"Le sommeil est actuellement un point faible : fais-en la priorité ce soir.":state.readiness.sleep===2?"Essaie de sécuriser une nuit complète et régulière.":"Sommeil déclaré bon : conserve cette routine.";
+ let base=c.color==="green"?"Récupération normale : hydratation, repas complets, sommeil régulier et mouvement léger.":c.color==="yellow"?"Récupération renforcée : évite le travail bonus, marche légère et soirée calme.":"Récupération prioritaire : pas d’intensité bonus, sommeil et apport énergétique suffisants.";
+ return `<div class="${c.color==="red"?"warningbox":"notice"}">${base}</div><div class="coachactions"><div class="coachaction"><b>Sommeil :</b> ${sleep}</div><div class="coachaction"><b>Après séance :</b> 5–10 min de retour au calme, hydrate-toi et prends un repas normal avec glucides + protéines.</div><div class="coachaction"><b>Charge :</b> ${m.load} unités sur 7 jours. Le coach préfère la régularité à l’accumulation de séances dures.</div></div>`
+}
+function hyroxFocus(){
+ let lim=dominantLimiter(),ph=phase(),z=zones(),text;
+ if(lim==="run")text=`Ta priorité est la répétabilité des 1 km. L’allure HYROX de travail reste autour de ${range(z.hyrox[0],z.hyrox[1])}/km : mieux vaut huit kilomètres réguliers qu’un départ trop rapide.`;
+ else if(lim==="legs")text="Les jambes limitent actuellement davantage que le souffle. Garde l’endurance facile et laisse les séances HYROX développer la résistance musculaire sans ajouter de volume jambes lourd.";
+ else if(lim==="stations")text="Les ateliers sont le principal limiteur. Le coach ne cherche pas à accélérer la course pour l’instant : priorité à l’économie sur les stations et à des transitions propres.";
+ else if(lim==="technique")text="Le potentiel le plus simple à gagner est technique : respiration, transitions, mise en place et mouvements propres avant d’augmenter l’intensité.";
+ else if(lim==="overall")text="La fatigue générale domine : le meilleur levier est d’absorber l’entraînement actuel avant d’en ajouter.";
+ else text=`Phase ${ph.name}. Objectif : développer la course tout en conservant assez de fraîcheur pour les stations. HYROX reste 8 × 1 km entrecoupés de 8 ateliers.`;
+ return `<div class="notice">${text}</div>${isDeloadWeek()?'<div class="badge">Semaine allégée</div>':''}<div class="badge">${state.profile.format}</div>`
+}
+function postSessionAnalysis(x){
+ let load=sessionLoad(x),msgs=[];
+ if(x.pain==="yes")msgs.push("⚠️ Douleur signalée : le coach va retirer l’intensité des prochaines recommandations. Si elle persiste ou s’aggrave, fais-la évaluer.");
+ else if(x.rpe>=9||x.after==="cooked")msgs.push("Séance très coûteuse : le coach ralentit la progression et protège la prochaine séance course.");
+ else if(x.rpe<=7&&x.after==="good")msgs.push("Bonne maîtrise : tu avais encore de la réserve. C’est exactement ce qu’on cherche pour progresser sans te vider.");
+ else msgs.push("Séance assimilable : le coach conserve une progression prudente.");
+ if(x.limiter==="run")msgs.push("Le souffle/course a limité la séance : priorité aux kilomètres faciles et aux répétitions contrôlées.");
+ if(x.limiter==="legs")msgs.push("Les jambes ont limité : évite d’ajouter un travail jambes dur en plus du programme.");
+ if(x.limiter==="stations")msgs.push("Les ateliers ont limité : inutile d’accélérer les runs pour l’instant ; travaille surtout l’économie des stations.");
+ if(x.limiter==="technique")msgs.push("La technique/transitions offre probablement le gain le plus facile à court terme.");
+ return `<div class="${x.pain==="yes"?"warningbox":"successbox"}"><b>Analyse du coach</b><br>${msgs.join(" ")}<br><span class="subtle">Charge de la séance : ${load} (${estimatedDuration(x)} min × RPE ${x.rpe}).</span></div>`
+}
+
+function todayTraining(){
+ let d=localDate(),done=[...state.feedback].filter(x=>x.date===d).sort((a,b)=>(b.id||"").localeCompare(a.id||""));
+ if(done.length){
+   let x=done[0], kind=x.type==="HYROX"?"hyrox":x.type==="Séance qualité"||x.type==="Test course"?"quality":x.type==="Course facile"?"easy":"rest";
+   return{day:"Aujourd’hui",time:"réalisé",title:x.type,kind,desc:`Séance enregistrée • RPE ${x.rpe}/10${x.after==="cooked"?" • fatigue élevée":""}`,completed:true};
+ }
+ let item=week().find(x=>x[5]===d);
+ if(!item)return{day:"Aujourd’hui",time:"—",title:"Repos / récupération",kind:"rest",desc:"Pas de séance planifiée.",completed:false};
+ return{day:item[0],time:item[1],title:item[2],kind:item[4],desc:item[3],completed:false}
+}
+function nutritionLoad(){
+ let t=todayTraining();
+ if(t.kind==="quality"||t.kind==="hyrox")return"high";
+ if(t.kind==="easy")return"medium";
+ return"low"
+}
+function mealExamples(){
+ let veg=state.nutrition.diet==="vegetarian";
+ return veg?{
+   meal:"riz/pâtes + œufs, tofu ou légumineuses bien tolérées + légumes cuits",
+   snack:"banane + compote + yaourt/skyr ou boisson végétale protéinée",
+   recovery:"féculent + tofu/œufs/produit laitier + légumes + fruit"
+ }:{
+   meal:"riz/pâtes/pommes de terre + poulet, œufs ou poisson + légumes",
+   snack:"banane + compote + yaourt/skyr, ou pain + miel/confiture",
+   recovery:"féculent + poulet/œufs/poisson + légumes + fruit"
+ }
+}
+function weightGuidance(){
+ let w=+state.nutrition.weight||0,load=nutritionLoad();
+ if(!w)return"Ajoute ton poids dans les réglages si tu veux afficher des repères en grammes. Sinon, utilise les portions et exemples proposés.";
+ let preLow=load==="high"?2:1,preHigh=load==="high"?4:2;
+ let proteinLow=Math.round(w*1.6),proteinHigh=Math.round(w*2.0);
+ let pre1=Math.round(w*preLow),pre2=Math.round(w*preHigh);
+ return `Repères optionnels pour ${w.toFixed(1)} kg : protéines quotidiennes ≈ ${proteinLow}–${proteinHigh} g/j. Avant une séance ${load==="high"?"intense":"modérée"}, les recommandations sportives générales se situent autour de ${preLow}–${preHigh} g/kg de glucides sur les 1–4 h précédentes, soit environ ${pre1}–${pre2} g au total selon tolérance et repas déjà pris. Inutile de viser le haut de la fourchette pour chaque séance.`
+}
+function nutritionTimelineHTML(){
+ let t=todayTraining(),load=nutritionLoad(),e=mealExamples(),gut=state.nutrition.gut==="sensitive";
+ if(load==="low")return `
+   <div class="timelineitem"><div class="t">Matin</div><div class="v">Petit-déjeuner normal</div><div class="d">Glucides modérés + source de protéines + fruit. Hydrate-toi normalement.</div></div>
+   <div class="timelineitem"><div class="t">Journée</div><div class="v">Assiette équilibrée</div><div class="d">Pas besoin de “charger”. Garde protéines régulières, légumes, féculents selon faim et activité.</div></div>
+   <div class="timelineitem"><div class="t">Soir</div><div class="v">Préparer la prochaine séance</div><div class="d">Repas complet et sommeil régulier. La récupération fait partie de l’entraînement.</div></div>`;
+ let sessionTime=t.time==="—"?"séance":t.time;
+ let fiber=gut?"Comme ton ventre est réglé sur “sensible”, privilégie des aliments familiers, plutôt pauvres en fibres et en gras juste avant l’effort.":"Évite simplement un repas très gras ou inhabituel juste avant l’effort.";
+ return `
+   <div class="timelineitem"><div class="t">Matin</div><div class="v">Construire les réserves</div><div class="d">Petit-déjeuner normal avec glucides + protéines. Pas besoin de surcharger.</div></div>
+   <div class="timelineitem"><div class="t">3–4 h avant • ${sessionTime}</div><div class="v">Repas principal pré-séance</div><div class="d">${e.meal}. ${fiber}</div></div>
+   <div class="timelineitem"><div class="t">1–2 h avant</div><div class="v">Petite collation si faim / repas éloigné</div><div class="d">${e.snack}. Portion facile à digérer ; ne teste rien de nouveau.</div></div>
+   <div class="timelineitem"><div class="t">Pendant</div><div class="v">${load==="high"?"Eau, glucides seulement si utile":"Eau selon soif"}</div><div class="d">${load==="high"?"Sur une séance dure ou longue, surtout si tu as peu mangé avant, une petite source de glucides peut aider. Pour les efforts prolongés >90 min, 30–60 g/h est un repère courant.":"Sur une sortie facile habituelle, l’eau suffit généralement."}</div></div>
+   <div class="timelineitem"><div class="t">Après</div><div class="v">Récupération</div><div class="d">${e.recovery}. Vise une vraie portion de protéines et remets des glucides, surtout si tu réentraînes le lendemain.</div></div>`;
+}
+function sessionFuelHTML(){
+ let load=nutritionLoad(),e=mealExamples();
+ return `<div class="coachactions">
+   <div class="coachaction"><b>Avant :</b> ${load==="high"?"fais du repas 3–4 h avant la base de ton carburant, puis une petite collation si nécessaire.":"reste simple : repas normal et collation seulement si besoin."}</div>
+   <div class="coachaction"><b>Pendant :</b> ${load==="high"?"hydrate-toi selon la soif. Si la séance se prolonge ou si tu pars avec peu de réserves, ajoute des glucides faciles à tolérer.":"eau selon la soif ; pas besoin de nutrition sportive pour une séance facile habituelle."}</div>
+   <div class="coachaction"><b>Après :</b> ${e.recovery}. Une prise de protéines d’environ 20–40 g est un repère pratique courant après une séance difficile.</div>
+ </div>`
+}
+function hydrationText(){
+ let load=nutritionLoad();
+ return load==="high"
+   ?"Bois régulièrement pendant la journée et arrive à la séance sans sensation de soif marquée. Pendant l’effort, bois selon ta soif et davantage si la séance est longue, chaude ou très transpirante. Ne force pas des litres arbitraires."
+   :"Hydratation normale et régulière. Le but est de ne pas arriver déshydraté à la prochaine séance, sans boire excessivement.";
+}
+function raceNutritionHTML(){
+ let d=days();
+ let mode=d<=7?"<span class='badge'>Mode compétition actif</span>":"";
+ return `${mode}
+ <div class="coachactions">
+   <div class="coachaction"><b>7 jours avant :</b> ne change pas brutalement ton alimentation. Répète les aliments qui passent bien à l’entraînement.</div>
+   <div class="coachaction"><b>24–48 h avant :</b> augmente progressivement la place des glucides, garde les aliments familiers et évite les excès de gras, alcool et nouveautés.</div>
+   <div class="coachaction"><b>3–4 h avant le départ :</b> repas riche en glucides, modéré en protéines, facile à digérer. Si ventre sensible, réduis fibres et gras.</div>
+   <div class="coachaction"><b>60–90 min avant :</b> petite collation connue seulement si tu en as besoin.</div>
+   <div class="coachaction"><b>Pendant :</b> stratégie déjà testée à l’entraînement ; ne découvre pas un gel ou une boisson le jour J.</div>
+   <div class="coachaction"><b>Après :</b> eau, repas complet, glucides + protéines.</div>
+ </div>`
+}
+function renderNutrition(){
+ let t=todayTraining(),load=nutritionLoad(),label=load==="high"?"Journée haute":load==="medium"?"Journée modérée":"Journée légère";
+ $("nutritionDayTitle").textContent=`${t.day} • ${t.title}${t.time!=="—"?" à "+t.time:""}`;
+ $("nutritionDaySummary").textContent=`${label}. ${t.desc}`;
+ $("nutritionTimeline").innerHTML=nutritionTimelineHTML();
+ $("plateCarbs").textContent=load==="high"?"Élevés":load==="medium"?"Modérés":"Selon faim";
+ $("weightTargets").textContent=weightGuidance();
+ $("hydrationAdvice").textContent=hydrationText();
+ $("hydrationPills").innerHTML=state.nutrition.hydrationTimes.map(x=>`<span class="reminderpill">💧 ${x}</span>`).join("");
+ $("sessionFuelCards").innerHTML=sessionFuelHTML();
+ $("raceNutritionPlan").innerHTML=raceNutritionHTML();
+ $("nWeight").value=state.nutrition.weight||"";
+ $("nDiet").value=state.nutrition.diet||"standard";
+ $("nGut").value=state.nutrition.gut||"normal";
+ state.nutrition.hydrationTimes.forEach((x,i)=>$("nHydro"+(i+1)).value=x);
+ let mini=nutritionLoad()==="high"
+   ?"<div class='metricbox'><b>Glucides ↑</b><span>Carburant</span></div><div class='metricbox'><b>20–40 g</b><span>Protéines après</span></div>"
+   :"<div class='metricbox'><b>Normal</b><span>Carburant</span></div><div class='metricbox'><b>Régulier</b><span>Hydratation</span></div>";
+ $("todayNutritionMini").innerHTML=mini;
+ $("todayOverview").textContent=`${t.title}${t.time!=="—"?" à "+t.time:""}. ${load==="high"?"Aujourd’hui, le coach augmente le carburant autour de la séance et insiste sur la récupération.":load==="medium"?"Nutrition normale avec une petite attention avant/après la course.":"Journée légère : mange normalement, récupère et prépare la prochaine séance."}`;
+}
+function saveNutritionSettings(){
+ let times=[1,2,3,4].map(i=>$("nHydro"+i).value).filter(Boolean);
+ while(times.length<4)times.push(DEFAULTS.nutrition.hydrationTimes[times.length]);
+ state.nutrition={weight:$("nWeight").value?+$("nWeight").value:"",diet:$("nDiet").value,gut:$("nGut").value,hydrationTimes:times};
+ save();render();renderNutrition()
+}
+function downloadBlob(text,name,type="text/calendar;charset=utf-8"){
+ let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([text],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000)
+}
+function hydrationEvent(date,time,index){
+ let [h,m]=time.split(":").map(Number),st=icsStamp(date,h,m),en=icsStamp(date,h,m+5);
+ return `BEGIN:VEVENT
+UID:hydro-${st}-${index}@hyroxcoach
+DTSTAMP:${icsStamp(new Date(),12,0)}
+DTSTART:${st}
+DTEND:${en}
+SUMMARY:💧 HYROX Coach — Hydratation
+DESCRIPTION:Petit rappel : bois selon ta soif et régulièrement. Pas besoin de forcer une quantité fixe.
+BEGIN:VALARM
+TRIGGER:PT0M
+ACTION:DISPLAY
+DESCRIPTION:💧 Pense à t’hydrater
+END:VALARM
+END:VEVENT`
+}
+function downloadHydrationICS(){
+ let events=[],start=today();
+ for(let d=0;d<7;d++){let date=addDays(start,d);state.nutrition.hydrationTimes.forEach((tm,i)=>events.push(hydrationEvent(date,tm,i)))}
+ let ics=`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//HYROX Toulouse Coach Nutrition//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+${events.join("\n")}
+END:VCALENDAR`;
+ downloadBlob(ics.replace(/\n/g,"\r\n"),"HYROX-hydratation-7-jours.ics")
+}
+
+function go(id,btn){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".navbtn").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");try{localStorage.setItem(UI_KEY,id)}catch(e){}window.scrollTo({top:0,behavior:"smooth"});if(id==="progress")drawCharts();if(id==="nutrition")renderNutrition()}
 function render(){
- let z=zones(),ph=phase(),fr=readiness(),q=quality();
- $("daysTop").textContent=days();
- $("homeHyroxPace").textContent=range(z.hyrox[0],z.hyrox[1]);
- $("homePhase").textContent=ph.name;
- $("homeFresh").textContent=fr+"/100";
- $("freshScore").textContent=fr;
- $("freshBar").style.width=fr+"%";
- $("freshText").textContent=fr>=75?"Tu es plutôt frais : tu peux maintenir la séance qualité.":fr>=50?"État correct : garde le plan mais ne dépasse pas les allures.":"Fatigue élevée : l’app réduit automatiquement la charge.";
- $("homeSession").innerHTML=`<div class="tag">${q.tag}</div><div class="title">${q.title}</div><p>${q.desc}</p><div class="chips"><span class="chip warn">${q.load}</span><span class="chip good">Dimanche</span></div>`;
- $("homeWeek").innerHTML=weekHtml(); $("planWeek").innerHTML=weekHtml();
- $("kEasy").textContent=fmt(z.easy[0]); $("kTempo").textContent=fmt(z.tempo[0]); $("kHyrox").textContent=fmt(z.hyrox[0]);
- $("pEasy").textContent=range(z.easy[0],z.easy[1])+"/km"; $("pTempo").textContent=range(z.tempo[0],z.tempo[1])+"/km"; $("pInterval").textContent=range(z.interval[0],z.interval[1])+"/km"; $("pHyrox").textContent=range(z.hyrox[0],z.hyrox[1])+"/km";
+ deriveAdaptation();let z=zones(),ph=phase(),fr=readiness(),n=nextRun(),wm=weekMetrics(),coach=coachState(),trend=loadTrend(),lim=dominantLimiter();
+ $("daysTop").textContent=days();$("homeHyroxPace").textContent=range(z.hyrox[0],z.hyrox[1]);$("homePhase").textContent=ph.name;$("homeFresh").textContent=fr+"/100";
+ $("freshScore").textContent=fr;$("freshBar").style.width=fr+"%";
+ $("freshText").textContent=fr>=75?"Bonne disponibilité : suis le plan sans ajouter d’intensité inutile.":fr>=50?"Disponibilité moyenne : respecte strictement les allures et les récupérations.":"Récupération faible : l’app réduit automatiquement la charge.";
+ $("coachMessage").textContent=coach.message;$("coachDetail").textContent=coach.detail;
+ $("coachStatus").className=`coachstatus ${coach.color}`;$("coachStatus").innerHTML=`<span class="dot"></span><span>${coach.status}</span>`;
+ $("coachActions").innerHTML=coachActions().map(x=>`<div class="coachaction">${x}</div>`).join("");
+ $("coachLoad").textContent=`${recentMetrics(7).load}`;$("coachRecovery").textContent=`${fr}/100`;$("coachRecoveryBar").style.width=fr+"%";$("coachLimiter").textContent=limiterLabel(lim);
+ $("nextRunHeading").textContent=n.label;$("homeSession").innerHTML=`<div class="tag">${n.tag||"Endurance"}</div><div class="title">${n.title}</div><p>${n.desc}</p><div class="chips"><span class="chip ${n.load==="Faible"?"good":"warn"}">${n.load||"Facile"}</span>${isDeloadWeek()?'<span class="chip good">Semaine allégée</span>':''}</div>`;
+ $("weekHyrox").textContent=wm.hyrox;$("weekRuns").textContent=wm.runs;$("weekKm").textContent=wm.km.toFixed(1);$("weekRpe").textContent=wm.avg?wm.avg.toFixed(1):"—";$("weekAdvice").textContent=weeklySummaryText();$("planWeekSummary").textContent=weeklySummaryText();
+ $("homeWeek").innerHTML=weekHtml();$("planWeek").innerHTML=weekHtml();$("recoveryPrescription").innerHTML=recoveryPrescription();$("hyroxFocus").innerHTML=hyroxFocus();
+ renderNutrition();
+ $("kEasy").textContent=fmt(z.easy[0]);$("kTempo").textContent=fmt(z.tempo[0]);$("kHyrox").textContent=fmt(z.hyrox[0]);
+ $("pEasy").textContent=range(z.easy[0],z.easy[1])+"/km";$("pTempo").textContent=range(z.tempo[0],z.tempo[1])+"/km";$("pInterval").textContent=range(z.interval[0],z.interval[1])+"/km";$("pHyrox").textContent=range(z.hyrox[0],z.hyrox[1])+"/km";
  const phases=[[1,"Base","Maintenant → mi-nov.","Endurance + vitesse courte."],[2,"Développement","Mi-nov. → 19 déc.","Seuil, 800 m, économie de course."],[3,"Spécifique HYROX","20 déc. → 16 janv.","1 km répétés + fatigue musculaire contrôlée."],[4,"Affûtage","17 janv. → 7 fév.","Réduire le volume et arriver frais."]];
  $("phaseList").innerHTML=phases.map(x=>`<div class="phase ${x[0]===ph.id?"active":""}"><strong>${x[1]}</strong><div class="subtle">${x[2]} • ${x[3]}</div></div>`).join("");
  $("sTestDistance").value=state.profile.testDistance;$("sTestTime").value=state.profile.testTime;$("sTarget").value=state.profile.target;$("sFriday").value=state.profile.friday;
- $("sFatigue").value=state.readiness.fatigue;$("sLegs").value=state.readiness.legs;$("sSleep").value=state.readiness.sleep;
- renderHistory();drawCharts();stats()
+ ["fatigue","legs","sleep","stress","soreness","motivation"].forEach(k=>{let id={fatigue:"sFatigue",legs:"sLegs",sleep:"sSleep",stress:"sStress",soreness:"sSoreness",motivation:"sMotivation"}[k];$(id).value=state.readiness[k]});
+ if(!editingId)$("jDate").value=localDate();renderHistory();drawCharts();stats();save()
 }
-function saveSettings(){state.profile={testDistance:+$("sTestDistance").value||3,testTime:$("sTestTime").value||"15:00",target:$("sTarget").value||"5:20",friday:$("sFriday").value};save();render()}
-function saveReadiness(){state.readiness={fatigue:+$("sFatigue").value,legs:+$("sLegs").value,sleep:+$("sSleep").value};save();render()}
+function saveSettings(){state.profile={...state.profile,testDistance:+$("sTestDistance").value||3,testTime:$("sTestTime").value||"15:00",target:$("sTarget").value||"5:20",friday:$("sFriday").value};save();render()}
+function saveReadiness(){state.readiness={fatigue:+$("sFatigue").value,legs:+$("sLegs").value,sleep:+$("sSleep").value,stress:+$("sStress").value,soreness:+$("sSoreness").value,motivation:+$("sMotivation").value};save();render()}
+function journalItem(){return{id:editingId||`s-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,date:$("jDate").value||localDate(),type:$("jType").value,duration:+$("jDuration").value||0,distance:+$("jDistance").value||0,pace:$("jPace").value.trim(),rpe:+$("jRpe").value||7,avgHr:+$("jAvgHr").value||0,maxHr:+$("jMaxHr").value||0,after:$("jAfter").value,limiter:$("jLimiter").value,pain:$("jPain").value,quality:$("jQuality").value,notes:$("jNotes").value.trim()}}
 function saveJournal(){
- let item={date:new Date().toISOString().slice(0,10),type:$("jType").value,distance:+$("jDistance").value||0,pace:$("jPace").value.trim(),rpe:+$("jRpe").value||7,after:$("jAfter").value,pain:$("jPain").value};
- state.feedback.unshift(item);
- if(item.pain==="yes"){state.adaptation.paceOffset=Math.min(30,(state.adaptation.paceOffset||0)+12);state.adaptation.volume=.75}
- else if(item.after==="cooked"||item.rpe>=9){state.adaptation.paceOffset=Math.min(25,(state.adaptation.paceOffset||0)+7);state.adaptation.volume=Math.max(.75,(state.adaptation.volume||1)-.1)}
- else if(item.after==="good"&&item.rpe<=7){state.adaptation.paceOffset=Math.max(-12,(state.adaptation.paceOffset||0)-3);state.adaptation.volume=Math.min(1.1,(state.adaptation.volume||1)+.05)}
- save();$("journalMsg").textContent="Séance enregistrée. Le plan a été recalculé.";render()
+ let item=journalItem(),msg;
+ if(editingId){let i=state.feedback.findIndex(x=>x.id===editingId);if(i>=0)state.feedback[i]=item;msg="Séance modifiée. Le coach a recalculé ton plan."}
+ else{state.feedback.unshift(item);msg="Séance enregistrée. Le coach a analysé ta charge et tes sensations."}
+ let analysis=postSessionAnalysis(item);state.coach.lastMessage=analysis;cancelEdit(true);save();render();$("journalMsg").textContent=msg;$("postCoach").innerHTML=analysis
 }
+function editSession(id){
+ let x=state.feedback.find(f=>f.id===id);if(!x)return;editingId=id;
+ $("jDate").value=x.date||localDate();$("jType").value=x.type;$("jDuration").value=x.duration||"";$("jDistance").value=x.distance||"";$("jPace").value=x.pace||"";$("jRpe").value=x.rpe||7;$("jAvgHr").value=x.avgHr||"";$("jMaxHr").value=x.maxHr||"";$("jAfter").value=x.after||"medium";$("jLimiter").value=x.limiter||"none";$("jPain").value=x.pain||"no";$("jQuality").value=x.quality||"normal";$("jNotes").value=x.notes||"";
+ $("saveJournalBtn").textContent="Enregistrer les modifications";$("cancelEditBtn").style.display="inline-block";$("journal").querySelector(".card").classList.add("editing");$("journalMsg").textContent="Modification de la séance sélectionnée.";$("postCoach").innerHTML="";window.scrollTo({top:0,behavior:"smooth"})
+}
+function clearJournalForm(){
+ $("jDate").value=localDate();$("jType").value="Course facile";$("jDuration").value="";$("jDistance").value="";$("jPace").value="";$("jRpe").value=7;$("jAvgHr").value="";$("jMaxHr").value="";$("jAfter").value="medium";$("jLimiter").value="none";$("jPain").value="no";$("jQuality").value="normal";$("jNotes").value=""
+}
+function cancelEdit(clear=true){editingId=null;$("saveJournalBtn").textContent="Enregistrer la séance";$("cancelEditBtn").style.display="none";$("journal").querySelector(".card").classList.remove("editing");if(clear){clearJournalForm();$("journalMsg").textContent="";$("postCoach").innerHTML=""}}
+function deleteSession(id){let x=state.feedback.find(f=>f.id===id);if(!x)return;if(!confirm(`Supprimer la séance ${x.type} du ${x.date} ?`))return;state.feedback=state.feedback.filter(f=>f.id!==id);if(editingId===id)cancelEdit();save();render();$("journalMsg").textContent="Séance supprimée. Le coach a recalculé le bilan et le plan."}
 function afterText(v){return v==="good"?"Encore du jus":v==="cooked"?"Cuit":"Correct"}
 function renderHistory(){
- let r=state.feedback.slice(0,30).map(x=>`<tr><td>${x.date}</td><td>${x.type}</td><td>${x.distance||"—"}</td><td>${x.pace||"—"}</td><td>${x.rpe}</td><td>${afterText(x.after)}</td></tr>`).join("");
- $("history").innerHTML=r||'<tr><td colspan="6" class="subtle">Aucune séance enregistrée.</td></tr>'
+ let r=[...state.feedback].sort((a,b)=>b.date.localeCompare(a.date)||(b.id||"").localeCompare(a.id||"")).slice(0,50).map(x=>`<tr><td>${x.date}</td><td>${x.type}</td><td>${x.duration||"~"+estimatedDuration(x)} min</td><td>${x.distance||"—"}</td><td>${x.pace||"—"}</td><td>${x.rpe}</td><td>${sessionLoad(x)}</td><td>${limiterLabel(x.limiter)}</td><td>${afterText(x.after)}</td><td><button class="actionbtn editbtn" onclick="editSession('${x.id}')">Modifier</button><button class="actionbtn deletebtn" onclick="deleteSession('${x.id}')">Supprimer</button></td></tr>`).join("");
+ $("history").innerHTML=r||'<tr><td colspan="10" class="subtle">Aucune séance enregistrée.</td></tr>'
 }
-function stats(){
- $("statSessions").textContent=state.feedback.length;
- $("statKm").textContent=state.feedback.reduce((a,x)=>a+(+x.distance||0),0).toFixed(1);
- let p=state.feedback.map(x=>sec(x.pace)).filter(Boolean);$("statBest").textContent=p.length?fmt(Math.min(...p))+"/km":"—"
-}
+function stats(){$("statSessions").textContent=state.feedback.length;$("statKm").textContent=state.feedback.reduce((a,x)=>a+(+x.distance||0),0).toFixed(1);let p=state.feedback.map(x=>sec(x.pace)).filter(Boolean);$("statBest").textContent=p.length?fmt(Math.min(...p))+"/km":"—"}
 function drawLine(svgId,vals,min,max,invert=false){
- const svg=$(svgId); svg.innerHTML="";
- if(vals.length<2){svg.innerHTML='<text x="300" y="90" text-anchor="middle" fill="#8ea0b2" font-size="16">Ajoute au moins 2 séances</text>';return}
- const W=600,H=180,pad=22,n=vals.length;
- const y=v=>pad+(H-pad*2)*(invert?(v-min)/(max-min):(max-v)/(max-min));
+ const svg=$(svgId);svg.innerHTML="";if(vals.length<2){svg.innerHTML='<text x="300" y="90" text-anchor="middle" fill="#8ea0b2" font-size="16">Ajoute au moins 2 séances</text>';return}
+ const W=600,H=180,pad=22,n=vals.length,span=Math.max(1,max-min),y=v=>pad+(H-pad*2)*(invert?(v-min)/span:(max-v)/span);
  const pts=vals.map((v,i)=>`${pad+i*(W-pad*2)/(n-1)},${y(v)}`).join(" ");
- svg.innerHTML=`<line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="#243243"/><polyline fill="none" stroke="#57d6ff" stroke-width="4" points="${pts}"/>`+
- vals.map((v,i)=>`<circle cx="${pad+i*(W-pad*2)/(n-1)}" cy="${y(v)}" r="5" fill="#d7ff45"/>`).join("")
+ svg.innerHTML=`<line x1="${pad}" y1="${H-pad}" x2="${W-pad}" y2="${H-pad}" stroke="#243243"/><polyline fill="none" stroke="#57d6ff" stroke-width="4" points="${pts}"/>`+vals.map((v,i)=>`<circle cx="${pad+i*(W-pad*2)/(n-1)}" cy="${y(v)}" r="5" fill="#d7ff45"/>`).join("")
 }
 function drawCharts(){
  let f=[...state.feedback].reverse();
  let p=f.map(x=>sec(x.pace)).filter(Boolean);if(p.length)drawLine("paceChart",p,Math.min(...p)-5,Math.max(...p)+5,true);else $("paceChart").innerHTML='<text x="300" y="90" text-anchor="middle" fill="#8ea0b2" font-size="16">Pas encore de données</text>';
- let r=f.map(x=>x.rpe).filter(Boolean);if(r.length)drawLine("rpeChart",r,1,10,false);else $("rpeChart").innerHTML='<text x="300" y="90" text-anchor="middle" fill="#8ea0b2" font-size="16">Pas encore de données</text>'
+ let r=f.map(x=>x.rpe).filter(Boolean);if(r.length)drawLine("rpeChart",r,1,10,false);else $("rpeChart").innerHTML='<text x="300" y="90" text-anchor="middle" fill="#8ea0b2" font-size="16">Pas encore de données</text>';
+ let l=f.map(sessionLoad).filter(Boolean);if(l.length)drawLine("loadChart",l,0,Math.max(...l)*1.1,false);else $("loadChart").innerHTML='<text x="300" y="90" text-anchor="middle" fill="#8ea0b2" font-size="16">Pas encore de données</text>'
 }
 function nextMonday(){let d=new Date();d.setHours(0,0,0,0);let add=(8-d.getDay())%7||7;d.setDate(d.getDate()+add);return d}
 function pad(n){return String(n).padStart(2,"0")}
 function icsStamp(d,h,m){let x=new Date(d);x.setHours(h,m,0,0);return`${x.getFullYear()}${pad(x.getMonth()+1)}${pad(x.getDate())}T${pad(x.getHours())}${pad(x.getMinutes())}00`}
 function downloadICS(){
  let mon=nextMonday(),events=[],q=quality(),e=easySession();
- const add=(off,title,h,m,dur,desc)=>{let d=new Date(mon);d.setDate(mon.getDate()+off);let st=icsStamp(d,h,m),en=icsStamp(d,h+Math.floor((m+dur)/60),(m+dur)%60);events.push(`BEGIN:VEVENT\nUID:${st}-${Math.random().toString(36).slice(2)}@hyroxcoach\nDTSTAMP:${icsStamp(new Date(),12,0)}\nDTSTART:${st}\nDTEND:${en}\nSUMMARY:${title}\nDESCRIPTION:${desc.replace(/,/g,"\\,")}\nEND:VEVENT`)};
- add(0,"HYROX",18,0,75,"Séance HYROX habituelle.");add(1,"HYROX",19,0,75,"Séance HYROX habituelle.");add(2,"Course facile HYROX Coach",18,30,50,e.desc);add(3,"HYROX",18,30,75,"Séance HYROX habituelle.");add(4,"HYROX",+state.profile.friday,0,75,"Horaire à ajuster selon le travail.");add(6,"Course qualité HYROX Coach",10,0,70,q.desc);
- let ics=`BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//HYROX Toulouse Coach//FR\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n${events.join("\n")}\nEND:VCALENDAR`;
- let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([ics],{type:"text/calendar;charset=utf-8"}));a.download="HYROX-semaine.ics";a.click()
+ const add=(off,title,h,m,dur,desc)=>{let d=new Date(mon);d.setDate(mon.getDate()+off);let st=icsStamp(d,h,m),en=icsStamp(d,h+Math.floor((m+dur)/60),(m+dur)%60);events.push(`BEGIN:VEVENT
+UID:${st}-${title.toLowerCase().replace(/[^a-z0-9]+/g,"-")}@hyroxcoach
+DTSTAMP:${icsStamp(new Date(),12,0)}
+DTSTART:${st}
+DTEND:${en}
+SUMMARY:${title}
+DESCRIPTION:${desc.replace(/,/g,"\,")}
+BEGIN:VALARM
+TRIGGER:-PT2H
+ACTION:DISPLAY
+DESCRIPTION:🍌 HYROX Coach - séance dans 2 h : hydrate-toi et prends une collation facile si nécessaire
+END:VALARM
+BEGIN:VALARM
+TRIGGER:-PT1H
+ACTION:DISPLAY
+DESCRIPTION:🏃 HYROX Coach - séance dans 1 h : prépare-toi, reste sur des aliments connus
+END:VALARM
+BEGIN:VALARM
+TRIGGER;RELATED=END:PT20M
+ACTION:DISPLAY
+DESCRIPTION:🥣 HYROX Coach - récupération : eau + repas ou collation avec glucides et protéines
+END:VALARM
+END:VEVENT`)};
+ add(0,"HYROX",18,0,75,"Séance HYROX. Ajuster l'intensité selon le Coach du jour.");add(1,"HYROX",19,0,75,"Séance HYROX. Ajuster l'intensité selon le Coach du jour.");add(2,"Course facile HYROX Coach",18,30,50,e.desc);add(3,"HYROX",18,30,75,"Séance HYROX. Ajuster l'intensité selon le Coach du jour.");add(4,"HYROX",+state.profile.friday,0,75,"Horaire à ajuster selon le travail et la récupération.");add(6,"Course qualité HYROX Coach",10,0,70,q.desc);
+ let ics=`BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//HYROX Toulouse Coach//FR
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+${events.join("\n")}
+END:VCALENDAR`;downloadBlob(ics.replace(/\n/g,"\r\n"),"HYROX-semaine.ics")
 }
 function exportData(){let a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:"application/json"}));a.download="hyrox-coach-data.json";a.click()}
+function importData(ev){let f=ev.target.files&&ev.target.files[0];if(!f)return;let r=new FileReader();r.onload=()=>{try{let d=JSON.parse(r.result);if(!d||!Array.isArray(d.feedback)||!d.profile)throw new Error("format");state=d;migrate();save();render();alert("Sauvegarde importée.")}catch(e){alert("Ce fichier ne semble pas être une sauvegarde HYROX Coach valide.")}finally{ev.target.value=""}};r.readAsText(f)}
 function resetData(){if(confirm("Réinitialiser toutes les données ?")){localStorage.removeItem(KEY);location.reload()}}
-render();
-if("serviceWorker"in navigator)navigator.serviceWorker.register("./sw.js").catch(()=>{});
+migrate();deriveAdaptation();render();
+try{let last=localStorage.getItem(UI_KEY);if(last&&$(last)){let b=document.querySelector(`[data-screen="${last}"]`);go(last,b)}}catch(e){}
+window.addEventListener("pageshow",()=>{render();});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)render();});
+if("serviceWorker"in navigator){navigator.serviceWorker.register("./sw.js").then(reg=>reg.update()).catch(()=>{});}
 </script>
 </body>
 </html>
