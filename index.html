@@ -11,6 +11,7 @@
 <meta name="theme-color" content="#0a0f14">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-180.png">
+<link rel="icon" type="image/png" href="./favicon.png">
 <title>HYROX Toulouse Coach</title>
 <style>
 :root{
@@ -139,6 +140,20 @@ textarea:focus{border-color:var(--cyan)}
 .racecard{background:linear-gradient(150deg,#182713,#101923 65%);border:1px solid #3e5926}
 .nutriskip{color:var(--muted);font-size:11px;margin-top:8px}
 
+
+/* V5.2 — progression course sur 8 répétitions */
+.runladder{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.runstep{position:relative;background:#0b141d;border:1px solid var(--line);border-radius:15px;padding:12px 9px;text-align:center;min-width:0}
+.runstep b{display:block;font-size:19px;white-space:nowrap}
+.runstep span{display:block;font-size:10px;color:var(--muted);margin-top:4px}
+.runstep.active{border-color:var(--lime);background:rgba(215,255,69,.08)}
+.runstep.active:after{content:"EN COURS";display:inline-block;margin-top:7px;padding:4px 6px;border-radius:999px;background:var(--lime);color:#0a1015;font-size:8px;font-weight:950;letter-spacing:.08em}
+.runstep.done{border-color:#31506a}
+.runstep.done:after{content:"✓";position:absolute;right:7px;top:5px;color:var(--good);font-weight:900}
+.progressline{height:7px;background:#0a1118;border:1px solid var(--line);border-radius:99px;overflow:hidden;margin-top:12px}
+.progressline>div{height:100%;background:linear-gradient(90deg,var(--cyan),var(--lime))}
+@media(max-width:520px){.runladder{grid-template-columns:repeat(2,1fr)}}
+
 </style>
 </head>
 <body>
@@ -146,7 +161,7 @@ textarea:focus{border-color:var(--cyan)}
   <div class="topbar">
     <div class="brand">
       <img src="./icon-192.png" alt="">
-      <div><div class="eyebrow">Toulouse 2027 • Coach V5</div><h1>HYROX Coach</h1></div>
+      <div><div class="eyebrow">Toulouse 2027 • Coach V5.4</div><h1>HYROX Coach</h1></div>
     </div>
     <div class="datebadge"><strong id="daysTop">—</strong><span>jours</span></div>
   </div>
@@ -241,6 +256,18 @@ textarea:focus{border-color:var(--cyan)}
         <button class="secondary" onclick="render()">Recalculer</button>
       </div>
     </div>
+    <div class="card" style="margin-top:12px">
+      <div class="eyebrow">Progression course</div>
+      <h2 style="margin-top:6px">8 répétitions, distance progressive</h2>
+      <div class="subtle">Le nombre de répétitions reste fixé à 8. Le coach augmente progressivement la distance : 400 → 600 → 800 → 1000 m. Le dimanche reste toujours sur cette progression. La fatigue modifie seulement l’allure et les récupérations ; c’est le mercredi qui absorbe la fatigue.</div>
+      <div id="runLadder" class="runladder"></div>
+      <div class="progressline"><div id="runLadderBar"></div></div>
+      <div id="runLadderAdvice" class="notice" style="margin-top:12px"></div>
+      <div class="notice" style="margin-top:10px">
+        <b>Mercredi :</b> séance d’assimilation. Si la récupération est bonne : footing facile. Si la fatigue monte : 8 répétitions très faciles sur environ la moitié de la distance du palier du dimanche (ex. dimanche 8×800 → mercredi récupération 8×400).
+      </div>
+    </div>
+
     <div class="grid">
       <div class="card s6">
         <h2>Prescription récupération</h2>
@@ -577,20 +604,80 @@ function coachActions(){
  return actions
 }
 function easySession(){
- let z=zones(),s=readiness(),l=loadLevel();
- if(s<45||l==="high")return{tag:"Récupération",title:"30–35 min récupération",desc:`Très facile entre ${range(z.easy[0]+10,z.easy[1]+20)}/km. Si les jambes sont lourdes, remplace par repos ou marche.`,load:"Faible"};
- let m=(l==="medium"||s<70)?35:45;if(isDeloadWeek())m=Math.min(m,35);
- return{tag:"Endurance",title:`${m} min facile`,desc:`Reste entre ${range(z.easy[0],z.easy[1])}/km. Conversation possible. Tu dois finir plus frais que tu n’as commencé.`,load:"Facile"}
+ let z=zones(),s=readiness(),l=loadLevel(),qp=qualityProgression();
+ // Le mercredi reste une séance d'assimilation. Quand la fatigue monte,
+ // on garde 8 répétitions mais avec environ la moitié de la distance du dimanche.
+ let recoveryDistance=Math.max(200,Math.round((qp.current.distance/2)/100)*100);
+ if(s<55||l==="high"){
+   return{
+     tag:"Récupération structurée",
+     title:`8 × ${recoveryDistance} m récupération`,
+     desc:`Même logique en 8 répétitions, mais très facile : 8 × ${recoveryDistance} m entre ${range(z.easy[0]+10,z.easy[1]+20)}/km, avec 1 min de marche ou trot très lent entre chaque répétition. Aucun objectif de chrono. Tu dois terminer plus frais qu'au départ.`,
+     load:"Faible",
+     recoveryFormat:true
+   }
+ }
+ let mins=l==="medium"||s<70?35:45;
+ if(isDeloadWeek())mins=Math.min(mins,35);
+ return{
+   tag:"Endurance",
+   title:`${mins} min facile`,
+   desc:`Course facile entre ${range(z.easy[0],z.easy[1])}/km. Si les jambes sont lourdes pendant l'échauffement, transforme-la en 8 × ${recoveryDistance} m très faciles avec 1 min marche/trot.`,
+   load:"Facile",
+   recoveryFormat:false
+ }
+}
+function qualityProgression(){
+ const steps=[
+  {distance:400,label:"8 × 400 m",recovery:"1 min 30",tag:"Seuil court"},
+  {distance:600,label:"8 × 600 m",recovery:"1 min 45",tag:"Seuil progressif"},
+  {distance:800,label:"8 × 800 m",recovery:"2 min",tag:"Seuil long"},
+  {distance:1000,label:"8 × 1000 m",recovery:"2 min",tag:"Spécifique HYROX"}
+ ];
+ // Trois semaines environ à chaque palier. On augmente la distance, jamais le nombre de répétitions.
+ let planned=Math.min(3,Math.floor(weekIndex()/3));
+ // Si la dernière séance qualité a été très mal tolérée, le coach revient temporairement d'un palier.
+ let latest=[...state.feedback].sort((a,b)=>b.date.localeCompare(a.date)).find(x=>x.type==="Séance qualité"||x.type==="Test course");
+ let stage=planned;
+ if(latest&&(latest.pain==="yes"||latest.after==="cooked"||(+latest.rpe||0)>=9))stage=Math.max(0,planned-1);
+ return{stage,planned,steps,current:steps[stage]}
 }
 function quality(){
- let z=zones(),p=phase().id,s=readiness(),v=state.adaptation.volume||1,l=loadLevel();
- if(s<45||l==="high")return{tag:"Récupération",title:"35–40 min très faciles",desc:`Semaine déjà chargée : cours entre ${range(z.easy[0]+10,z.easy[1]+15)}/km. Pas de fractionné.`,load:"Faible"};
- if(l==="medium")v=Math.max(.75,v-.12);
- if(isDeloadWeek())v=Math.max(.7,v*.8);
- if(p===1){let r=Math.max(4,Math.round(6*v));return{tag:"Intervalles courts",title:`${r} × 400 m`,desc:`15 min faciles, puis ${r} × 400 m à ${range(z.interval[0],z.interval[1])}/km. Récupération 1 min 30. Finis par 10 min faciles.`,load:"Modérée"}}
- if(p===2){let r=Math.max(3,Math.round(5*v));return{tag:"Développement",title:`${r} × 800 m`,desc:`15 min faciles, puis ${r} × 800 m à ${range(z.interval[0]+4,z.interval[1]+8)}/km. Récupération 2 min. La dernière répétition doit rester propre.`,load:"Élevée"}}
- if(p===3){let r=Math.max(4,Math.round(5*v));return{tag:"Spécifique HYROX",title:`${r} × 1 km contrôlés`,desc:`15 min faciles. Puis ${r} × 1 km à ${range(z.hyrox[0],z.hyrox[1])}/km, récupération 90 s. Sur 2 répétitions seulement : 10 burpees OU 20 fentes avant le km.`,load:"Élevée"}}
- return{tag:"Affûtage",title:"4 × 1 km propre",desc:`15 min faciles. 4 × 1 km à ${range(z.hyrox[0],z.hyrox[1])}/km, récupération 90 s. Aucune station lourde. Tu dois finir avec de la marge.`,load:"Modérée"}
+ let z=zones(),s=readiness(),l=loadLevel(),qp=qualityProgression(),cur=qp.current;
+ let paceLo=z.tempo[0],paceHi=z.tempo[1];
+ let recovery=cur.recovery,extra="";
+ let title=cur.label,dist=cur.distance,tag=cur.tag;
+
+ // Le dimanche reste TOUJOURS la séance de progression.
+ // Le coach ajuste seulement l'allure et la récupération selon la fatigue.
+ if(l==="medium"||s<65){
+   paceLo+=5;paceHi+=10;recovery=dist>=800?"2 min 15":"2 min";
+   extra+=" Fatigue modérée : même progression, mais allure plus contrôlée et récupération légèrement plus longue.";
+ }
+ if(l==="high"||s<45){
+   paceLo+=12;paceHi+=18;recovery=dist>=800?"2 min 45":"2 min 30";
+   extra+=" Charge élevée : la séance reste au programme, mais cours dans la partie facile de la fourchette et garde une récupération complète. Ne transforme surtout pas la 8e répétition en test.";
+ }
+ if(isDeloadWeek()){
+   paceLo+=5;paceHi+=8;recovery=dist>=800?"2 min 30":"2 min 15";
+   extra+=" Semaine allégée : on conserve les 8 répétitions mais avec davantage de marge.";
+ }
+ if(recentPain()){
+   extra+=" Une douleur a été signalée récemment : la progression reste affichée dans le plan, mais ne l'exécute pas si la douleur est encore présente, s'aggrave ou modifie ta foulée.";
+ }
+ // Dernière semaine : toujours 8 répétitions, raccourcies à 400 m pour l'affûtage.
+ if(days()<=7){
+   dist=400;title="8 × 400 m";tag="Rappel pré-course";recovery="1 min 30";
+   paceLo=Math.max(z.hyrox[0]-5,z.tempo[0]);paceHi=Math.max(z.hyrox[1],z.tempo[0]+10);
+   extra=" Semaine de course : 8 répétitions courtes pour garder du rythme sans créer de fatigue résiduelle.";
+ }
+ return{
+   tag,
+   title,
+   desc:`15 min faciles, puis ${title} à ${range(paceLo,paceHi)}/km. Récupération ${recovery} entre chaque répétition. Termine par 10 min très faciles. Objectif : huit répétitions régulières, jamais une séance à l'échec.${extra}`,
+   load:dist>=800?"Élevée":"Modérée",
+   progressionDistance:dist
+ }
 }
 function week(){
  let e=easySession(),q=quality(),m=mondayOf(),l=loadLevel();
@@ -786,6 +873,36 @@ END:VCALENDAR`;
  downloadBlob(ics.replace(/\n/g,"\r\n"),"HYROX-hydratation-7-jours.ics")
 }
 
+
+function progressionDates(){
+ let start=new Date(START);
+ return[
+  {stage:0,start:addDays(start,0),end:addDays(start,20)},
+  {stage:1,start:addDays(start,21),end:addDays(start,41)},
+  {stage:2,start:addDays(start,42),end:addDays(start,62)},
+  {stage:3,start:addDays(start,63),end:addDays(RACE,-8)}
+ ]
+}
+function shortDate(d){return d.toLocaleDateString("fr-FR",{day:"numeric",month:"short"})}
+function renderRunLadder(){
+ let qp=qualityProgression(),dates=progressionDates();
+ $("runLadder").innerHTML=qp.steps.map((x,i)=>{
+   let cls=i<qp.stage?"done":i===qp.stage?"active":"";
+   let dt=dates[i];
+   return `<div class="runstep ${cls}"><b>${x.label}</b><span>${shortDate(dt.start)} → ${shortDate(dt.end)}</span></div>`
+ }).join("");
+ $("runLadderBar").style.width=`${((qp.stage+1)/4)*100}%`;
+ let held=qp.stage<qp.planned;
+ if(held){
+   $("runLadderAdvice").textContent=`Le calendrier prévoyait ${qp.steps[qp.planned].label}, mais ta dernière séance qualité a été très coûteuse. Le palier est temporairement conservé à ${qp.current.label}, mais le dimanche reste une séance de 8 répétitions.`;
+ }else{
+   let next=qp.stage<3?qp.steps[qp.stage+1].label:"8 × 1000 m";
+   $("runLadderAdvice").textContent=qp.stage<3
+    ?`Palier actuel : ${qp.current.label}. Le but est de rendre les 8 répétitions régulières au seuil avant de passer à ${next}.`
+    :`Palier spécifique atteint : 8 × 1000 m. On cherche maintenant à rendre les huit kilomètres répétables avec une allure maîtrisée, proche des exigences de course HYROX.`;
+ }
+}
+
 function go(id,btn){document.querySelectorAll(".screen").forEach(x=>x.classList.remove("active"));$(id).classList.add("active");document.querySelectorAll(".navbtn").forEach(x=>x.classList.remove("active"));if(btn)btn.classList.add("active");try{localStorage.setItem(UI_KEY,id)}catch(e){}window.scrollTo({top:0,behavior:"smooth"});if(id==="progress")drawCharts();if(id==="nutrition")renderNutrition()}
 function render(){
  deriveAdaptation();let z=zones(),ph=phase(),fr=readiness(),n=nextRun(),wm=weekMetrics(),coach=coachState(),trend=loadTrend(),lim=dominantLimiter();
@@ -798,7 +915,7 @@ function render(){
  $("coachLoad").textContent=`${recentMetrics(7).load}`;$("coachRecovery").textContent=`${fr}/100`;$("coachRecoveryBar").style.width=fr+"%";$("coachLimiter").textContent=limiterLabel(lim);
  $("nextRunHeading").textContent=n.label;$("homeSession").innerHTML=`<div class="tag">${n.tag||"Endurance"}</div><div class="title">${n.title}</div><p>${n.desc}</p><div class="chips"><span class="chip ${n.load==="Faible"?"good":"warn"}">${n.load||"Facile"}</span>${isDeloadWeek()?'<span class="chip good">Semaine allégée</span>':''}</div>`;
  $("weekHyrox").textContent=wm.hyrox;$("weekRuns").textContent=wm.runs;$("weekKm").textContent=wm.km.toFixed(1);$("weekRpe").textContent=wm.avg?wm.avg.toFixed(1):"—";$("weekAdvice").textContent=weeklySummaryText();$("planWeekSummary").textContent=weeklySummaryText();
- $("homeWeek").innerHTML=weekHtml();$("planWeek").innerHTML=weekHtml();$("recoveryPrescription").innerHTML=recoveryPrescription();$("hyroxFocus").innerHTML=hyroxFocus();
+ $("homeWeek").innerHTML=weekHtml();$("planWeek").innerHTML=weekHtml();renderRunLadder();$("recoveryPrescription").innerHTML=recoveryPrescription();$("hyroxFocus").innerHTML=hyroxFocus();
  renderNutrition();
  $("kEasy").textContent=fmt(z.easy[0]);$("kTempo").textContent=fmt(z.tempo[0]);$("kHyrox").textContent=fmt(z.hyrox[0]);
  $("pEasy").textContent=range(z.easy[0],z.easy[1])+"/km";$("pTempo").textContent=range(z.tempo[0],z.tempo[1])+"/km";$("pInterval").textContent=range(z.interval[0],z.interval[1])+"/km";$("pHyrox").textContent=range(z.hyrox[0],z.hyrox[1])+"/km";

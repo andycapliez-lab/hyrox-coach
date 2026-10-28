@@ -129,3 +129,59 @@ Important : le module donne des repères généraux de nutrition sportive. Il ne
 - douleur récente calculée par date ;
 - écran Aujourd’hui tient compte des séances réellement enregistrées ;
 - export/import de sauvegarde JSON.
+
+
+## V5.2 — Progression course sur 8 répétitions
+
+Séance course clé :
+- 8 × 400 m
+- 8 × 600 m
+- 8 × 800 m
+- 8 × 1000 m
+
+Chaque palier dure environ trois semaines. Le nombre de répétitions ne baisse pas
+pendant la progression normale : c'est la distance de chaque répétition qui augmente.
+
+Le travail est volontairement orienté seuil contrôlé afin que les 8 répétitions restent
+régulières et compatibles avec les quatre séances HYROX hebdomadaires.
+
+Exceptions intelligentes :
+- récupération mauvaise / charge élevée : remplacement temporaire par footing très facile ;
+- dernière séance qualité très mal tolérée : recul temporaire d'un palier ;
+- semaine allégée : même nombre de répétitions, allure plus facile / récupération plus longue ;
+- dernière semaine avant Toulouse : 8 × 400 m pour l'affûtage, sans fatigue résiduelle.
+
+Toutes les fonctions V5.1 sont conservées.
+
+
+## V5.3 — Dimanche progression fixe / Mercredi assimilation
+
+Règle principale :
+- Dimanche : toujours la séance de progression en 8 répétitions.
+  8×400 → 8×600 → 8×800 → 8×1000 m.
+  La fatigue ne supprime plus la séance : elle modifie l'allure et les temps de récupération.
+- Mercredi : séance d'assimilation.
+  Si la récupération est bonne : footing facile.
+  Si la fatigue est élevée : séance récupération en 8 répétitions, avec environ la moitié
+  de la distance du palier du dimanche :
+    - dimanche 8×400 → mercredi 8×200 facile
+    - dimanche 8×600 → mercredi 8×300 facile
+    - dimanche 8×800 → mercredi 8×400 facile
+    - dimanche 8×1000 → mercredi 8×500 facile
+
+Sécurité :
+- une douleur récente déclenche toujours un avertissement ; la séance du dimanche reste
+  visible dans le plan mais ne doit pas être exécutée si la douleur persiste ou modifie la foulée.
+
+
+## V5.4 — Nouveau logo
+
+Le nouveau logo HYROX Toulouse Coach est intégré partout :
+- icône iPhone / écran d’accueil ;
+- icône PWA 180×180 ;
+- icône PWA 192×192 ;
+- icône PWA 512×512 ;
+- icône affichée dans l’en-tête ;
+- favicon du site.
+
+Toutes les fonctions de la V5.3 sont conservées.
